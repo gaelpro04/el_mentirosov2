@@ -4,5 +4,6 @@ Implementación del juego "el mentiroso" para
 una baraja española
 
 # Elaborado por:
-Gael Jovani López García 1191699
+Gael Jovani López García 1191699 
+
 Saul Ivan
