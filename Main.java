@@ -12,6 +12,9 @@ public class Main {
         carta.setVisibilidad(false);
         System.out.println(carta);
 
+        //No estoy seguro que imprime~~
+        Baraja barajita = new Baraja();
+        System.out.println(barajita);
 
     }
 }
