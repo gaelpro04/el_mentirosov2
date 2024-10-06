@@ -47,7 +47,7 @@ public class Interfaz {
         botonJugar.setAlignmentX(Component.CENTER_ALIGNMENT);
         botonJugar.setPreferredSize(new Dimension(150, 40));  // Tamaño fijo
         botonJugar.setMaximumSize(botonJugar.getPreferredSize()); // Se asegura que el botón no crezca más allá del tamaño preferido especificado anteriormente.
-        botonJugar.addActionListener(event -> botonJugar());
+        botonJugar.addActionListener(evento -> botonJugar());
         panelBotones.add(botonJugar); // Se agrega el boton al panel de botones.
         panelBotones.add(Box.createRigidArea(new Dimension(0, 10)));  // Espacio entre los botones
 
@@ -56,7 +56,7 @@ public class Interfaz {
         botonAcerca.setAlignmentX(Component.CENTER_ALIGNMENT);
         botonAcerca.setPreferredSize(new Dimension(150, 40));  // Tamaño fijo
         botonAcerca.setMaximumSize(botonAcerca.getPreferredSize()); // Se asegura que el botón no crezca más allá del tamaño preferido especificado anteriormente.
-        botonAcerca.addActionListener(event -> botonAcerca());
+        botonAcerca.addActionListener(evento -> botonAcerca());
         panelBotones.add(botonAcerca); // El boton se añade al panel de botones.
         panelBotones.add(Box.createRigidArea(new Dimension(0, 10))); //Espacio entre los botones
 
