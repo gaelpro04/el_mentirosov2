@@ -13,37 +13,49 @@ public class Interfaz {
 
     public void makeFrame() {
         frame = new JFrame("El mentiroso");
-        frame.setSize(1920,1080);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // Cerrar aplicación al cerrar la ventana
         Container containerPane = frame.getContentPane();
         containerPane.setLayout(new BorderLayout());
 
         // Título del juego
         JLabel tituloJuego = new JLabel("El mentiroso", SwingConstants.CENTER);
+
+        //Se establece una fuente para el título. Aquí se usa una fuente "Serif", con estilo Font.BOLD (negrita) y tamaño 24.
         tituloJuego.setFont(new Font("Serif", Font.BOLD, 24));
+
+        // Se obtiene el contentPane del JFrame.
+        // El contentPane es el panel principal donde se colocan todos los componentes visuales (botones, etiquetas, paneles, etc.)
+        // Cada JFrame tiene un contentPane donde se añaden los elementos gráficos.
         containerPane.add(tituloJuego, BorderLayout.NORTH);
 
         // Panel para los botones
         JPanel panelBotones = new JPanel();
+
+        // Se establece un BoxLayout con orientación vertical (BoxLayout.Y_AXIS)
+        // para organizar los botones uno debajo del otro dentro del panel.
         panelBotones.setLayout(new BoxLayout(panelBotones, BoxLayout.Y_AXIS));
+
+        // Establece la alineación del panel de botones en el eje X.
+        // Con Component.CENTER_ALIGNMENT, todos los componentes dentro
+        // del panel estarán centrados horizontalmente.
         panelBotones.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // Botón para jugar
         JButton botonJugar = new JButton("Jugar");
         botonJugar.setAlignmentX(Component.CENTER_ALIGNMENT);
         botonJugar.setPreferredSize(new Dimension(150, 40));  // Tamaño fijo
-        botonJugar.setMaximumSize(botonJugar.getPreferredSize());
+        botonJugar.setMaximumSize(botonJugar.getPreferredSize()); // Se asegura que el botón no crezca más allá del tamaño preferido especificado anteriormente.
         botonJugar.addActionListener(event -> botonJugar());
-        panelBotones.add(botonJugar);
+        panelBotones.add(botonJugar); // Se agrega el boton al panel de botones.
         panelBotones.add(Box.createRigidArea(new Dimension(0, 10)));  // Espacio entre los botones
 
         // Botón para acerca de:
         JButton botonAcerca = new JButton("Acerca de");
         botonAcerca.setAlignmentX(Component.CENTER_ALIGNMENT);
         botonAcerca.setPreferredSize(new Dimension(150, 40));  // Tamaño fijo
-        botonAcerca.setMaximumSize(botonAcerca.getPreferredSize());
+        botonAcerca.setMaximumSize(botonAcerca.getPreferredSize()); // Se asegura que el botón no crezca más allá del tamaño preferido especificado anteriormente.
         botonAcerca.addActionListener(event -> botonAcerca());
-        panelBotones.add(botonAcerca);
+        panelBotones.add(botonAcerca); // El boton se añade al panel de botones.
 
         // Agregar el panel de botones al centro
         containerPane.add(panelBotones, BorderLayout.CENTER);
