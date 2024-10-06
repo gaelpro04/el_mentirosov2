@@ -22,12 +22,12 @@ public class Interfaz {
         //Botón para jugar
         JButton botonJugar = new JButton("Jugar");
         botonJugar.addActionListener(event -> botonJugar());
-        containerPane.add(botonJugar, BorderLayout.CENTER);
+        containerPane.add(botonJugar, BorderLayout.NORTH);
 
         //Bóton para acerca de:
         JButton botonAcerca = new JButton("Acerca de");
         botonAcerca.addActionListener(event -> botonAcerca());
-        containerPane.add(botonAcerca);
+        containerPane.add(botonAcerca, BorderLayout.SOUTH);
 
         frame.pack();
         frame.setVisible(true);
@@ -41,5 +41,9 @@ public class Interfaz {
     public void botonAcerca()
     {
         System.out.println("Simon2");
+    }
+
+    public static void main(String[] args) {
+        new Interfaz();
     }
 }
