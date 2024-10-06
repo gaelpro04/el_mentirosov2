@@ -28,6 +28,7 @@ public class Interfaz {
         // El contentPane es el panel principal donde se colocan todos los componentes visuales (botones, etiquetas, paneles, etc.)
         // Cada JFrame tiene un contentPane donde se añaden los elementos gráficos.
         containerPane.add(tituloJuego, BorderLayout.NORTH);
+        containerPane.add(Box.createRigidArea(new Dimension(0,15)));
 
         // Panel para los botones
         JPanel panelBotones = new JPanel();
@@ -57,6 +58,15 @@ public class Interfaz {
         botonAcerca.setMaximumSize(botonAcerca.getPreferredSize()); // Se asegura que el botón no crezca más allá del tamaño preferido especificado anteriormente.
         botonAcerca.addActionListener(event -> botonAcerca());
         panelBotones.add(botonAcerca); // El boton se añade al panel de botones.
+        panelBotones.add(Box.createRigidArea(new Dimension(0, 10))); //Espacio entre los botones
+
+        // Botón para salir:
+        JButton botonSalir = new JButton("Salir");
+        botonSalir.setAlignmentX(Component.CENTER_ALIGNMENT);
+        botonSalir.setPreferredSize(new Dimension(150,40));
+        botonSalir.setMaximumSize(botonSalir.getPreferredSize());
+        botonSalir.addActionListener(evento -> botonSalir());
+        panelBotones.add(botonSalir);
 
         // Agregar el panel de botones al centro
         containerPane.add(panelBotones, BorderLayout.CENTER);
@@ -75,6 +85,11 @@ public class Interfaz {
     public void botonAcerca()
     {
         System.out.println("Simon2");
+    }
+
+    public void botonSalir()
+    {
+        System.exit(0);
     }
 
     public static void main(String[] args) {
