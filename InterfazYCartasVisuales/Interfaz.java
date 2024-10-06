@@ -12,6 +12,9 @@ public class Interfaz {
         makeFrame();
     }
 
+    /**
+     * Método que elabora el marco con los botones de sucesos.
+     */
     public void makeFrame() {
         frame = new JFrame("El mentiroso");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // Cerrar aplicación al cerrar la ventana
@@ -77,16 +80,25 @@ public class Interfaz {
         frame.setVisible(true);
     }
 
+    /**
+     * Método del botón Jugar
+     */
     public void botonJugar()
     {
         System.out.println("Simon");
     }
 
+    /**
+     * Método del botón Acerca de
+     */
     public void botonAcerca()
     {
         System.out.println("Simon2");
     }
 
+    /**
+     * Método para el bóton salir
+     */
     public void botonSalir()
     {
         System.exit(0);
