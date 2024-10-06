@@ -15,14 +15,14 @@ public class Interfaz {
     {
         frame = new JFrame("El mentiroso");
         Container containerPane = frame.getContentPane();
-
-        JLabel tituloJuego = new JLabel("El mentiroso");
+        frame.setSize(1920,1080);
+        JLabel tituloJuego = new JLabel("El mentiroso", SwingConstants.CENTER);
         containerPane.add(tituloJuego, BorderLayout.NORTH);
 
         //Botón para jugar
         JButton botonJugar = new JButton("Jugar");
         botonJugar.addActionListener(event -> botonJugar());
-        containerPane.add(botonJugar, BorderLayout.NORTH);
+        containerPane.add(botonJugar, BorderLayout.CENTER);
 
         //Bóton para acerca de:
         JButton botonAcerca = new JButton("Acerca de");
