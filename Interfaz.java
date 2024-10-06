@@ -22,10 +22,12 @@ public class Interfaz {
         //Botón para jugar
         JButton botonJugar = new JButton("Jugar");
         botonJugar.addActionListener(event -> botonJugar());
+        containerPane.add(botonJugar);
 
         //Bóton para acerca de:
         JButton botonAcerca = new JButton("Acerca de");
         botonAcerca.addActionListener(event -> botonAcerca());
+        containerPane.add(botonAcerca);
 
         frame.pack();
         frame.setVisible(true);
