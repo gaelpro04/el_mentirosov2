@@ -26,6 +26,9 @@ public class Interfaz {
         //Bóton para acerca de:
         JButton botonAcerca = new JButton("Acerca de");
         botonAcerca.addActionListener(event -> botonAcerca());
+
+        frame.pack();
+        frame.setVisible(true);
     }
 
     public void botonJugar()

@@ -86,7 +86,15 @@ public class Carta {
     public String toString()
     {
         if (visibilidad) {
-            return valor + " - " + palo;
+            if (valor == 10) {
+                return "sota - " + palo;
+            } else if (valor == 11) {
+                return "caballero - " + palo;
+            } else if (valor == 12) {
+                return "rey - " + palo;
+            } else {
+                return valor + " - " + palo;
+            }
         }
         return "## - ####";
     }

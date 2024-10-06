@@ -14,7 +14,9 @@ public class Main {
 
         //No estoy seguro que imprime~~
         Baraja barajita = new Baraja();
-        System.out.println(barajita);
+        barajita.mostrarEnConsola();
+
+        Interfaz interfaz = new Interfaz();
 
     }
 }
