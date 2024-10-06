@@ -1,3 +1,5 @@
+package InterfazYCartasVisuales;
+
 public class TableroVisual {
     private Carta carta;
 

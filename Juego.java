@@ -1,3 +1,5 @@
+import InterfazYCartasVisuales.TableroVisual;
+
 import java.util.ArrayList;
 
 public class Juego {
