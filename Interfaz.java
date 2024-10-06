@@ -1,5 +1,3 @@
-package InterfazYCartasVisuales;
-
 import java.awt.*;
 import javax.swing.*;
 
@@ -75,7 +73,7 @@ public class Interfaz {
         containerPane.add(panelBotones, BorderLayout.CENTER);
 
         frame.pack();
-        frame.setSize(400, 300);  // Tamaño inicial de la ventana
+        frame.setSize(800, 800);  // Tamaño inicial de la ventana
         frame.setLocationRelativeTo(null);  // Centrar la ventana en la pantalla
         frame.setVisible(true);
     }
@@ -85,7 +83,8 @@ public class Interfaz {
      */
     public void botonJugar()
     {
-        System.out.println("Simon");
+        frame.setVisible(false);
+        InterfazJuego frameJugar = new InterfazJuego();
     }
 
     /**
