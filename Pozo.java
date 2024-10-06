@@ -3,26 +3,22 @@ import java.util.Collection;
 import java.util.Collections;
 
 public class Pozo {
-    private ArrayList<Baraja> pozo;
+    private ArrayList<Carta> pozo;
     private boolean estaVacio = true;
 
     public Pozo() {
         this.pozo = new ArrayList();
     }
 
-    public ArrayList<Baraja> getPozo() {
+    public ArrayList<Carta> getPozo() {
         return pozo;
     }
 
-    public void setPozo(ArrayList<Baraja> pozo) {
+    public void setPozo(ArrayList<Carta> pozo) {
         this.pozo = pozo;
     }
 
-    public void agregarCarta(Carta cartaParaAgregar) {
-        pozo.add(cartaParaAgregar);
-    }
-
-    public void agregarBaraja(Baraja barajaParaAgregar) {
+    public void agregarBaraja(Carta barajaParaAgregar) {
         pozo.add(barajaParaAgregar);
     }
 

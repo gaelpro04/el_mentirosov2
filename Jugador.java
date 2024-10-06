@@ -2,10 +2,14 @@ import java.util.ArrayList;
 
 public class Jugador {
     private String nombre;
-    private ArrayList<Baraja> mano;
+    private ArrayList<Carta> mano;
     private int cartasRestantes;
     private int puntuacion;
 
+    /**
+     * Constructor con limites de cartas
+     * @param nombre
+     */
     public Jugador(String nombre) {
         this.nombre = nombre;
         this.mano = new ArrayList<>();
@@ -21,11 +25,11 @@ public class Jugador {
         this.nombre = nombre;
     }
 
-    public ArrayList<Baraja> getMano() {
+    public ArrayList<Carta> getMano() {
         return mano;
     }
 
-    public void setMano(ArrayList<Baraja> mano) {
+    public void setMano(ArrayList<Carta> mano) {
         this.mano = mano;
     }
 

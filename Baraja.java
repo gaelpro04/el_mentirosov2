@@ -16,7 +16,6 @@ public class Baraja {
 
         for (String palo : bancoPalos) {
             for (int i = 1; i <= 12; ++i) {
-
                 baraja.add(new Carta(palo, i, true));
             }
         }
