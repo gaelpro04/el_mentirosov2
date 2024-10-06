@@ -1,3 +1,5 @@
+
+
 public class Carta {
     /*
     String[] bancoPalos = {"oro", "copa", "espada", "basto"};
