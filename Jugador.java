@@ -1,8 +1,12 @@
 import java.util.ArrayList;
 
 public class Jugador {
+
+    //Los atributos de un jugador constan de:
+    //Un nombre, la mano que es de tipo Baraja, una puntuación
+    //y cartas restantes
     private String nombre;
-    private Baraja mano;
+    private final Baraja mano;
     private int cartasRestantes;
     private int puntuacion;
 
@@ -17,10 +21,18 @@ public class Jugador {
         this.puntuacion = 0;
     }
 
+    /**
+     * Método selector, regresa el nombre del jugador
+     * @return
+     */
     public String getNombre() {
         return nombre;
     }
 
+    /**
+     * Método que cambia el nombre del jugador
+     * @param nombre
+     */
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
@@ -55,10 +67,13 @@ public class Jugador {
                 '}';
     }
 
+    /**
+     * Método que muestra todas las cartas de la mano
+     * del jugador, este método se apoya con el método de monstrarEnConsola()
+     * de Baraja
+     */
     public void mostrarMano()
     {
-        for (Carta c : getMano()) {
-            System.out.println(c.toString());
-        }
+        mano.mostrarEnConsola();
     }
 }

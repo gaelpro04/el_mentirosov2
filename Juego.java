@@ -3,6 +3,10 @@ import java.util.Scanner;
 import java.util.Collections;
 
 public class Juego {
+
+    //Por el momento la clase consta de una colección de jugadores
+    //Una mesa(donde se pondrán las cartas jugadas), una baraja
+    //que será la baraja con la que se jugará toda la partida
     private ArrayList<Jugador> jugadores;
     private Mesa mesa;
     private TableroVisual tableroVisual;
@@ -17,6 +21,9 @@ public class Juego {
         this.jugadores = new ArrayList<>(cantJugadores);
         this.mesa = new Mesa();
         this.tableroVisual = new TableroVisual();
+
+        //El constructor por defecto se tiene que poner
+        //48(que es la cantidad de cartas de una baraja española)
         this.baraja = new Baraja(48);
 
         //Se inicializa primero los jugadores para que no haya problemas
@@ -25,6 +32,7 @@ public class Juego {
             jugadores.add(new Jugador(""));
         }
 
+        //Método para hacer manos(explicado más adelante)
         hacerManos();
     }
 
@@ -91,6 +99,10 @@ public class Juego {
         this.tableroVisual = tableroVisual;
     }
 
+    /**
+     * Método para seleccionar el veredicto del jugador y que hacer con las cartas
+     * @param veredicto
+     */
     public void setVerdadOMentira(String veredicto)
     {
         switch (veredicto) {
@@ -104,15 +116,96 @@ public class Juego {
     }
 
     /**
+     * Método que determina si es el fin del juego(cuando un jugador se queda sin cartas)
+     * @param jugadores
+     * @return
+     */
+    public boolean finDelJuego(ArrayList<Jugador> jugadores)
+    {
+        //Con uso de flujos y lambdas se puede saber si un jugador
+        //tiene su mano vacia(queriendo decir que el juego ya acabó)
+        return jugadores.stream()
+                .anyMatch(jugador -> jugador.getMano().isEmpty());
+
+    }
+
+    /**
+     * Método que regresa el jugador ganador(Se requiere del método finDelJuego)
+     * @param jugadores
+     * @return
+     */
+    public Jugador setGanador(ArrayList<Jugador> jugadores)
+    {
+        //Con apoyo de flujos y lambdas se puede obtener el jugador con la mano vacía
+        //ademas se utiliza de .orElse para brindar seguridad al código.
+        return jugadores.stream()
+                .filter(jungador -> jungador.getMano().isEmpty())
+                .findAny()
+                .orElse(null);
+    }
+
+    /**
+     * Método para seleccionar las cartas a poner al pozo
+     * @param jugador
+     * @return
+     */
+    public Baraja sistemaEleccionCartas(Jugador jugador)
+    {
+        //Se inicia con una baraja vacia que en este caso se meterán las cartas
+        //que se seleccionarán, además de una variable que nos servirá para elegir
+        //los indices de las cartas y un scanner para leer el indice que seleccione
+        //el jugador
+        int indiceEleccion = 0;
+        Baraja cartasEleccion = new Baraja();
+        Scanner respuesta = new Scanner(System.in);
+
+        //El ciclo parará hasta halla 3 cartas en su contenido
+        while (cartasEleccion.getBaraja().size() != 3) {
+
+            System.out.println("Cartas de " + jugador.getNombre() + "\n");
+            jugador.mostrarMano();
+
+            System.out.println("\nCartas elegidas: \n");
+            if (!cartasEleccion.getBaraja().isEmpty()) {
+                cartasEleccion.mostrarEnConsola();
+            }
+
+            System.out.println("Eliga las cartas a meter al pozo(máximo 3)\n");
+            cartasEleccion.getBaraja().add(jugador.getMano().remove(respuesta.nextInt()));
+        }
+
+        System.out.println("\nCartas elegidas: \n");
+        cartasEleccion.mostrarEnConsola();
+
+        return cartasEleccion;
+    }
+
+    /**
      * Método de juego, es decir donde ya se juega
      */
     public void jugar()
     {
         int turnoActual = 0;
         boolean juegoTerminado = false;
+        Scanner respuesta = new Scanner(System.in);
 
         while (!juegoTerminado) {
+            Jugador jugadorActual = jugadores.get(turnoActual);
+            Baraja cartasEleccion = new Baraja();
+            int indiceEleccion = 0;
 
+            if (!finDelJuego(jugadores)) {
+
+                System.out.println("===Turno del jugador " + jugadorActual.getNombre() + "===");
+                cartasEleccion = sistemaEleccionCartas(jugadorActual);
+
+                System.out.println("Quieres...\n");
+                System.out.println("Mentir\n");
+                System.out.println("Verdad\n");
+                setVerdadOMentira(respuesta.next());
+            } else {
+
+            }
 
 
             turnoActual = (turnoActual + 1) % jugadores.size();

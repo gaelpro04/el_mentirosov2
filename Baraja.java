@@ -58,10 +58,13 @@ public class Baraja {
     }
 
     /**
-     * Método que muestra en consola todas las cartas
+     * Método que muestra en consola todas las cartas, además muestra
+     * un indice por cada carta
      */
     public void mostrarEnConsola()
     {
-        baraja.forEach(carta -> System.out.println(carta.toString()));
+        for (int i = 0; i < baraja.size(); ++i) {
+            System.out.println(i + " -- | " + baraja.get(i).toString());
+        }
     }
 }
