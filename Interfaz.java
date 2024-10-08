@@ -73,7 +73,7 @@ public class Interfaz {
         containerPane.add(panelBotones, BorderLayout.CENTER);
 
         frame.pack();
-        frame.setSize(800, 800);  // Tamaño inicial de la ventana
+        frame.setSize(800, 700);  // Tamaño inicial de la ventana
         frame.setLocationRelativeTo(null);  // Centrar la ventana en la pantalla
         frame.setVisible(true);
     }

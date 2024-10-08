@@ -9,7 +9,7 @@ public class Baraja {
     /**
      * Constructor por preterminado
      */
-    public  Baraja()
+    public  Baraja(int tamanio)
     {
         //Una baraja española por preterminado tiene 48 cartas
         baraja = new ArrayList<>(48);
@@ -42,11 +42,10 @@ public class Baraja {
 
     /**
      * Constructor de baraja vacio(se puede utilizar para las manos)
-     * @param tamanio
      */
-    public Baraja(int tamanio)
+    public Baraja()
     {
-        baraja = new ArrayList<>(tamanio);
+        baraja = new ArrayList<>();
     }
 
     /**

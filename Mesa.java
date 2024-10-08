@@ -1,17 +1,27 @@
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 
-public class Pozo {
-    private ArrayList<Carta> pozo;
-    private boolean estaVacio = true;
+public class Mesa {
 
-    public Pozo() {
-        this.pozo = new ArrayList();
+    //Atributos de una mesa de cartas, donde se compone
+    //de un pozo donde se pondrán las cartas jugadas, y
+    //en dado caso que haya cartas en el cementerio se pondrán
+    private ArrayList<Carta> pozo;
+    private ArrayList<Carta> cementerio;
+
+    public Mesa() {
+        this.pozo = new ArrayList<>();
+        this.cementerio = new ArrayList<>();
     }
 
-    public ArrayList<Carta> getPozo() {
+    public ArrayList<Carta> getPozo()
+    {
         return pozo;
+    }
+
+    public ArrayList<Carta> getCementerio()
+    {
+        return cementerio;
     }
 
     public void setPozo(ArrayList<Carta> pozo) {
@@ -22,15 +32,7 @@ public class Pozo {
         pozo.add(barajaParaAgregar);
     }
 
-    public boolean isEstaVacio() {
-        return estaVacio;
-    }
-
-    public void setEstaVacio(boolean estaVacio) {
-        this.estaVacio = estaVacio;
-    }
-
-    public int contarCartasEnPozo () {
+    public int tamanioPozo () {
         return pozo.size();
     }
 
@@ -38,6 +40,7 @@ public class Pozo {
         Collections.shuffle(this.pozo);
     }
 
+    /*
     @Override
     public String toString() {
         if (!estaVacio) {
@@ -50,4 +53,5 @@ public class Pozo {
                     '}';
         }
     }
+    */
 }

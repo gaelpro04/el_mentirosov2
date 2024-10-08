@@ -13,8 +13,12 @@ public class InterfazJuego
     JButton mentirBoton;
     JButton verdadBoton;
     JButton colocarBoton;
+
+    //Barra del menú
     JMenuBar menuBar;
-    JMenuItem menuSalir;
+    JMenu menuAyuda;
+    JMenuItem menuItemSalir;
+    JMenuItem menuItemRegresar;
 
     /**
      * Constructor de la clase donde se inicia todo el marco con sus componentes
@@ -23,6 +27,7 @@ public class InterfazJuego
     {
         //Creación de todos los elementos de la ventana de juego
         frameJugar = new JFrame("El mentiroso");
+        frameJugar.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         panelJugar = new JPanel();
         barraAbajo = new JPanel();
         mentirBoton = new JButton("Mentir");
@@ -32,14 +37,18 @@ public class InterfazJuego
         colocarBoton = new JButton("Colocar en el pozo");
         colocarBoton.addActionListener(evento -> botonColocar());
         barraArriba = new JPanel();
+
+
         menuBar = new JMenuBar();
-        menuSalir = new JMenuItem("Salir");
-        menuSalir.addActionListener(evento -> System.exit(0));
+        menuAyuda = new JMenu("Ayuda");
+        menuItemRegresar = new JMenuItem("Regresar");
+        menuItemSalir = new JMenuItem("Salir");
+        menuItemSalir.addActionListener(evento -> System.exit(0));
 
 
         //Impresión de la ventana
         frameJugar.pack();
-        frameJugar.setSize(800,800);
+        frameJugar.setSize(800,700);
         frameJugar.setVisible(true);
         frameJugar.setLocationRelativeTo(null);
 
@@ -50,7 +59,10 @@ public class InterfazJuego
         barraAbajo.add(verdadBoton, Component.CENTER_ALIGNMENT);
         barraAbajo.add(colocarBoton, Component.CENTER_ALIGNMENT);
         frameJugar.add(barraArriba, BorderLayout.NORTH);
-        menuBar.add(menuSalir);
+
+        menuAyuda.add(menuItemRegresar);
+        menuAyuda.add(menuItemSalir);
+        menuBar.add(menuAyuda);
         frameJugar.setJMenuBar(menuBar);
         frameJugar.add(panelJugar);
         frameJugar.add(barraAbajo, BorderLayout.SOUTH);

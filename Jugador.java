@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class Jugador {
     private String nombre;
-    private ArrayList<Carta> mano;
+    private Baraja mano;
     private int cartasRestantes;
     private int puntuacion;
 
@@ -12,7 +12,7 @@ public class Jugador {
      */
     public Jugador(String nombre) {
         this.nombre = nombre;
-        this.mano = new ArrayList<>();
+        this.mano = new Baraja();
         this.cartasRestantes = 0;
         this.puntuacion = 0;
     }
@@ -26,11 +26,7 @@ public class Jugador {
     }
 
     public ArrayList<Carta> getMano() {
-        return mano;
-    }
-
-    public void setMano(ArrayList<Carta> mano) {
-        this.mano = mano;
+        return mano.getBaraja();
     }
 
     public int getCartasRestantes() {
