@@ -54,4 +54,11 @@ public class Jugador {
                 ", puntuacion=" + puntuacion +
                 '}';
     }
+
+    public void mostrarMano()
+    {
+        for (Carta c : getMano()) {
+            System.out.println(c.toString());
+        }
+    }
 }

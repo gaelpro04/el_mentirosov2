@@ -19,6 +19,12 @@ public class Juego {
         this.tableroVisual = new TableroVisual();
         this.baraja = new Baraja(48);
 
+        //Se inicializa primero los jugadores para que no haya problemas
+        //al pedirles el nombre
+        for (int i = 0; i < cantJugadores; ++i) {
+            jugadores.add(new Jugador(""));
+        }
+
         hacerManos();
     }
 
@@ -34,20 +40,25 @@ public class Juego {
         //Se crea una variable Scanner para poder leer los nombres de cada jugador
         Scanner respuesta = new Scanner(System.in);
 
+
         //Aquí se inicia el constructor de cada jugador de la colección de jugadores
         for (int i = 0; i < jugadores.size(); i++) {
-            System.out.println("Ingresa el nombre del jugador " + i+1);
-            jugadores.add(new Jugador(respuesta.next()));
+            System.out.println("Ingresa el nombre del jugador " + (i+1));
+            jugadores.get(i).setNombre(respuesta.next());
         }
 
         //Se revuelve la baraja para poder asignar las cartas más fácil a cada jugador
         Collections.shuffle(baraja.getBaraja());
 
+        //Para determinar las cartas por jugador se divide la cantidad de cartas entre
+        //los jugadores
+        int cartasPorJugador = baraja.getBaraja().size() / jugadores.size();
+
         //El ciclo para asignar cartas consta del ciclo de cada jugador y el
         //ciclo para asignar cartas por jugador
         for (Jugador jugador : jugadores) {
-            for (int i = 0; i < baraja.getBaraja().size() / jugadores.size(); i++) {
-                jugador.getMano().add(baraja.getBaraja().getFirst());
+            for (int i = 0; i < cartasPorJugador; i++) {
+                jugador.getMano().add(baraja.getBaraja().removeFirst());
             }
         }
 
@@ -55,7 +66,7 @@ public class Juego {
         //quede un residuo en la baraja esta se alamacenará en el cementerio del juego
         if (!baraja.getBaraja().isEmpty()) {
             for (int i = 0; i < baraja.getBaraja().size(); ++i) {
-                mesa.getCementerio().add(baraja.getBaraja().getFirst());
+                mesa.getCementerio().add(baraja.getBaraja().removeFirst());
             }
         }
     }
@@ -80,12 +91,33 @@ public class Juego {
         this.tableroVisual = tableroVisual;
     }
 
-    @Override
-    public String toString() {
-        return "Juego{" +
-                "jugadores=" + jugadores +
-                ", mesa=" + mesa +
-                ", tableroVisual=" + tableroVisual +
-                '}';
+    public void setVerdadOMentira(String veredicto)
+    {
+        switch (veredicto) {
+            case "verdad":
+
+                break;
+            case "mentira":
+                break;
+        }
+        System.out.println("arre2");
     }
+
+    /**
+     * Método de juego, es decir donde ya se juega
+     */
+    public void jugar()
+    {
+        int turnoActual = 0;
+        boolean juegoTerminado = false;
+
+        while (!juegoTerminado) {
+
+
+
+            turnoActual = (turnoActual + 1) % jugadores.size();
+        }
+
+    }
+
 }
