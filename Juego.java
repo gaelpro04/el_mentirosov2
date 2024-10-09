@@ -25,7 +25,7 @@ public class Juego {
 
         //El constructor por defecto se tiene que poner
         //48(que es la cantidad de cartas de una baraja española)
-        this.baraja = new Baraja(48);
+        this.baraja = new Baraja(40);
 
         //Se inicializa primero los jugadores para que no haya problemas
         //al pedirles el nombre
