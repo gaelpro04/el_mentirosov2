@@ -245,13 +245,15 @@ public class Juego {
         //no hay cartas en el pozo que analizar al principio y el turno de jugador del
         //veredicto final que este nos servirá por si un jugador decide decir que es mentira
         //lo que dijo el jugador anterior, y si es verdad lo que dice se utiliza de la variable
-        //para acceder al indice de ese jugador y almacenar todas las cartas ahí
+        //para acceder al indice de ese jugador y almacenar todas las cartas ahí, por ultimo
+        //un objeto de tipo Jugador llamado ganador para guardar el ganador en ese objeto
         int turnoActual = 0;
         boolean juegoTerminado = false;
         Scanner respuesta = new Scanner(System.in);
         String veredictoFinal = "";
         boolean banderaEscoger = false;
         int turnoJugadorVeredictoFinal = 0;
+        Jugador ganador = null;
 
         while (!juegoTerminado) {
 
@@ -267,23 +269,33 @@ public class Juego {
                 System.out.println("===Turno del jugador " + jugadorActual.getNombre() + "===");
 
 
+                //BanderaEscoger como se mencionó se usa una vez para ya poder acceder a la lectura
+                //si mentió el jugador anterior o no
                 if (banderaEscoger) {
                     System.out.println("Es...");
                     System.out.println("mentira\n");
                     System.out.println("verdad\n");
                     String veredictoNuevo = respuesta.next();
 
+                    //Se analiza el verdicto del jugador anterior con el actual y si coinciden en la mentira
+                    //Se lleva todo el pozo el jugador mentiroso
                     if (veredictoNuevo.equals("mentira") && veredictoFinal.equals("mentira")) {
                         System.out.println("Al parecer se desubrió el mentiroso!!!\n");
 
+                        //Ciclo para agregar las cartas del pozo a la mano del jugador, donde turnoJugadorVeredictoFinal
+                        //es una variable timpo int del indice del jugador anterior
                         for (int i = 0; i < mesa.tamanioPozo(); ) {
                             mesa.getPozo().getBaraja().getFirst().setVisibilidad(true);
                             jugadores.get(turnoJugadorVeredictoFinal).getMano().add(mesa.getPozo().getBaraja().removeFirst());
                         }
 
+                        //Si no coincide el veredictoNuevo de mentira con el veredicto anterior, el jugadorActual toma
+                        //todas las cartas del pozo
                     } else if (veredictoNuevo.equals("mentira") && veredictoFinal.equals("verdad")) {
                         System.out.println("Al parecer si era verdad...");
 
+                        //En este no es necesario la variable del indice anterior ya que solo se almacenan en el jugador
+                        //actual
                         for (int i = 0; i < mesa.tamanioPozo(); ) {
                             mesa.getPozo().getBaraja().getFirst().setVisibilidad(true);
                             jugadorActual.getMano().add(mesa.getPozo().getBaraja().removeFirst());
@@ -291,28 +303,44 @@ public class Juego {
                     }
                 }
 
+                //Método para seleccionar las cartas a poner en el pozo donde retorna las tres cartas seleccionadas
                 cartasEleccion = sistemaEleccionCartas(jugadorActual);
 
                 System.out.println("Quieres...\n");
                 System.out.println("mentir\n");
                 System.out.println("verdad\n");
+
+                //En este mismo método se lee el veredicto del jugador, donde el método almacena las cartas en
+                //el pozo y crea el veredicto para el siguiente jugador, además retotrna el veredicto pero en palabra
+                //para poder comparalo con el veredicto del siguiente jugador
                 veredictoFinal = setVerdadOMentira(respuesta.next(), cartasEleccion, jugadorActual);
 
+                //Se mete al pozo pero ocultadas par asimular el pozo(las cartas deben estar volteadas)
                 for (Carta carta : cartasEleccion.getBaraja()) {
                     carta.setVisibilidad(false);
                     mesa.getPozo().getBaraja().add(carta);
                 }
 
+                //Se imprime el pozo la variable bandera se torna true.
                 System.out.println("===Pozo===\n");
                 mesa.getPozo().mostrarEnConsola();
                 banderaEscoger = true;
-            } else {
 
+                //En dado caso que nose cumpla la condición que es el fin del juego(quiere decir que ya hay un jugador
+                // sin cartas) se va acá donde se determina el ganador y torna la variable de juego terminado true
+            } else {
+                ganador = setGanador(jugadores);
+                juegoTerminado = true;
             }
 
+            //se toma el indice del jugador actual para poder meter las cartas en la siguiente iteracion
+            // en dado caso que el eligiera mentira
             turnoJugadorVeredictoFinal = turnoActual;
             turnoActual = (turnoActual + 1) % jugadores.size();
         }
+
+        //Se imprime el ganador
+        System.out.println("Ha ganado " + ganador.getNombre() + ", se quedó sin cartas!!");
 
     }
 
