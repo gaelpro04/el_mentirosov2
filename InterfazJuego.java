@@ -42,6 +42,7 @@ public class InterfazJuego
         menuBar = new JMenuBar();
         menuAyuda = new JMenu("Ayuda");
         menuItemRegresar = new JMenuItem("Regresar");
+        menuItemRegresar.addActionListener(evento -> regresar());
         menuItemSalir = new JMenuItem("Salir");
         menuItemSalir.addActionListener(evento -> System.exit(0));
 
@@ -83,4 +84,11 @@ public class InterfazJuego
     {
 
     }
+
+    private void regresar() {
+        frameJugar.setVisible(false);
+        new Interfaz();
+    }
+
+
 }
