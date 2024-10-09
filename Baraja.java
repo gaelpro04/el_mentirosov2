@@ -67,4 +67,9 @@ public class Baraja {
             System.out.println(i + " -- | " + baraja.get(i).toString());
         }
     }
+
+    public void setVisibilidad(boolean visibilidad)
+    {
+        baraja.forEach(carta -> carta.setVisibilidad(visibilidad));
+    }
 }

@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Collections;
+import java.util.Random;
 
 public class Juego {
 
@@ -74,7 +75,7 @@ public class Juego {
         //quede un residuo en la baraja esta se alamacenará en el cementerio del juego
         if (!baraja.getBaraja().isEmpty()) {
             for (int i = 0; i < baraja.getBaraja().size(); ++i) {
-                mesa.getCementerio().add(baraja.getBaraja().removeFirst());
+                mesa.getCementerio().getBaraja().add(baraja.getBaraja().removeFirst());
             }
         }
     }
@@ -103,16 +104,51 @@ public class Juego {
      * Método para seleccionar el veredicto del jugador y que hacer con las cartas
      * @param veredicto
      */
-    public void setVerdadOMentira(String veredicto)
+    public String setVerdadOMentira(String veredicto, Baraja cartasELeccion, Jugador jugador)
     {
+        //Consta de una variable para crear los indices para la baraja mentira
+        Random random = new Random();
+        //Cartas mentira sirve por si elige mentira, entonces obtendrá cartas de la misma mano
+        //del jugador(que no se sacarán solo se copiaran) y esas se imprimiran al usuario
+        Baraja cartasMentira = new Baraja();
+        //Será el valor de retorno
+        String veredictoFinal = "";
+
+        //Switch case que actúa en los dos casos posibles
         switch (veredicto) {
             case "verdad":
 
+                //Si elige verdad el jugador simplemente se imprimen las cartas reales
+                //que metió el jugador al pozo
+                System.out.println("El jugador ha metido al pozo: \n");
+                for (Carta carta : cartasELeccion.getBaraja()) {
+                    System.out.println("Ha metido: " + carta.toString());
+                }
+
+                //Se asigna el valor de retorno
+                veredictoFinal = "verdad";
                 break;
-            case "mentira":
+            case "mentir":
+
+                //Aquí es un poco más complejo donde se utiliza de la variable cartas mentira
+                //donde se hace un ciclo que su limite es la cantidad de cartas que seleccionó el jugador
+                //pero las cartas que se imprimirán a los demás jugadores serán falsas es decir las que
+                //verdaderamente no metió el jugador
+                System.out.println("El jugador ha metido al pozo: \n");
+                for (int i = 0; i < cartasELeccion.getBaraja().size(); ++i) {
+
+                    //se pone menos uno porque recordar que size() imprime la cantidad de objetos en la colección,
+                    //más no el número de indices
+                    cartasMentira.getBaraja().add(jugador.getMano().get(random.nextInt(jugador.getMano().size() - 1)));
+
+                    //Se imprimen las cartas erroneas
+                    System.out.println("Ha metido: " + cartasMentira.getBaraja().get(i).toString());
+                }
+                veredictoFinal = "mentira";
                 break;
         }
-        System.out.println("arre2");
+        //Ya por ultimo se retorna el veredicto.
+        return veredictoFinal;
     }
 
     /**
@@ -158,25 +194,42 @@ public class Juego {
         int indiceEleccion = 0;
         Baraja cartasEleccion = new Baraja();
         Scanner respuesta = new Scanner(System.in);
+        int eleccion = 0;
 
-        //El ciclo parará hasta halla 3 cartas en su contenido
-        while (cartasEleccion.getBaraja().size() != 3) {
+        //El ciclo parará hasta halla 3 cartas en su contenido o a menos
+        //que el usuario ingrese -1 para parar el ciclo solo seleccionar
+        //menos de las tres cartas
+        while (cartasEleccion.getBaraja().size() != 3 && eleccion != -1) {
 
             System.out.println("Cartas de " + jugador.getNombre() + "\n");
             jugador.mostrarMano();
 
+            //Se imprime si ya hubo un ciclo anterior
             System.out.println("\nCartas elegidas: \n");
             if (!cartasEleccion.getBaraja().isEmpty()) {
                 cartasEleccion.mostrarEnConsola();
             }
 
-            System.out.println("Eliga las cartas a meter al pozo(máximo 3)\n");
-            cartasEleccion.getBaraja().add(jugador.getMano().remove(respuesta.nextInt()));
+            //Lectura de indice de la mano
+            System.out.println("Eliga las cartas a meter al pozo(máximo 3) o si ya quieres salir oprime \"-1\" \n");
+            eleccion = respuesta.nextInt();
+
+            //Como se mencionó al inicio del ciclo, si el jugador selecciona -1 quiere decir
+            //que quiere salir
+            if (eleccion == -1) {
+                break;
+            }
+
+            //Se saca la carta y se mete en la mano del jugador
+            cartasEleccion.getBaraja().add(jugador.getMano().remove(eleccion));
         }
 
+        //Como la ultima impresión de la ultima carta seleccionada no se imprime
+        //se vuelve imprimir las cartas seleccionadas aquí
         System.out.println("\nCartas elegidas: \n");
         cartasEleccion.mostrarEnConsola();
 
+        //Se retorna las cartas para poder meterlas en otro método
         return cartasEleccion;
     }
 
@@ -185,11 +238,26 @@ public class Juego {
      */
     public void jugar()
     {
+        //Variables que constan del turnoActual donde estará cambiando cada iteracion
+        //un booleano para saber si el juego terminó, un Scanner para lectura de datos
+        //VeredictoFinal, que este es para elegir si el usuario quiere mentira o verdad
+        //Bandera escoger es una bandera de solo uso, para la primera iteación ya que
+        //no hay cartas en el pozo que analizar al principio y el turno de jugador del
+        //veredicto final que este nos servirá por si un jugador decide decir que es mentira
+        //lo que dijo el jugador anterior, y si es verdad lo que dice se utiliza de la variable
+        //para acceder al indice de ese jugador y almacenar todas las cartas ahí
         int turnoActual = 0;
         boolean juegoTerminado = false;
         Scanner respuesta = new Scanner(System.in);
+        String veredictoFinal = "";
+        boolean banderaEscoger = false;
+        int turnoJugadorVeredictoFinal = 0;
 
         while (!juegoTerminado) {
+
+            //Variables temporales, JugadorActual para mejor legibilidad del jugador
+            //que se esta jugando actualmente, cartasEleccion que se utiliza cuando los
+            //jugadores eligen que cartas usar
             Jugador jugadorActual = jugadores.get(turnoActual);
             Baraja cartasEleccion = new Baraja();
             int indiceEleccion = 0;
@@ -197,17 +265,52 @@ public class Juego {
             if (!finDelJuego(jugadores)) {
 
                 System.out.println("===Turno del jugador " + jugadorActual.getNombre() + "===");
+
+
+                if (banderaEscoger) {
+                    System.out.println("Es...");
+                    System.out.println("mentira\n");
+                    System.out.println("verdad\n");
+                    String veredictoNuevo = respuesta.next();
+
+                    if (veredictoNuevo.equals("mentira") && veredictoFinal.equals("mentira")) {
+                        System.out.println("Al parecer se desubrió el mentiroso!!!\n");
+
+                        for (int i = 0; i < mesa.tamanioPozo(); ) {
+                            mesa.getPozo().getBaraja().getFirst().setVisibilidad(true);
+                            jugadores.get(turnoJugadorVeredictoFinal).getMano().add(mesa.getPozo().getBaraja().removeFirst());
+                        }
+
+                    } else if (veredictoNuevo.equals("mentira") && veredictoFinal.equals("verdad")) {
+                        System.out.println("Al parecer si era verdad...");
+
+                        for (int i = 0; i < mesa.tamanioPozo(); ) {
+                            mesa.getPozo().getBaraja().getFirst().setVisibilidad(true);
+                            jugadorActual.getMano().add(mesa.getPozo().getBaraja().removeFirst());
+                        }
+                    }
+                }
+
                 cartasEleccion = sistemaEleccionCartas(jugadorActual);
 
                 System.out.println("Quieres...\n");
-                System.out.println("Mentir\n");
-                System.out.println("Verdad\n");
-                setVerdadOMentira(respuesta.next());
+                System.out.println("mentir\n");
+                System.out.println("verdad\n");
+                veredictoFinal = setVerdadOMentira(respuesta.next(), cartasEleccion, jugadorActual);
+
+                for (Carta carta : cartasEleccion.getBaraja()) {
+                    carta.setVisibilidad(false);
+                    mesa.getPozo().getBaraja().add(carta);
+                }
+
+                System.out.println("===Pozo===\n");
+                mesa.getPozo().mostrarEnConsola();
+                banderaEscoger = true;
             } else {
 
             }
 
-
+            turnoJugadorVeredictoFinal = turnoActual;
             turnoActual = (turnoActual + 1) % jugadores.size();
         }
 
