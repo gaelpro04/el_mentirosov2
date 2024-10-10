@@ -1,4 +1,6 @@
-import javax.swing.ImageIcon;
+import javax.swing.*;
+import java.awt.*;
+
 
 public class Carta {
     /*
@@ -8,7 +10,7 @@ public class Carta {
     //Atributos que componen una carta española
     private String palo;
     private int valor;
-    private ImageIcon imagenCarta;
+    private JLabel imagenCarta;
     private boolean visibilidad;
 
     /**
@@ -19,7 +21,7 @@ public class Carta {
         palo = "oro";
         valor = 1;
         visibilidad = true;
-        imagenCarta = new ImageIcon();
+        imagenCarta = new JLabel();
     }
 
     /**
@@ -47,16 +49,7 @@ public class Carta {
         this.palo = palo;
         this.valor = valor;
         this.visibilidad = visibilidad;
-        this.imagenCarta = new ImageIcon(getClass().getResource(rutaImagen));
-    }
-
-    /**
-     * Constructor con parametro carta para una rápida absorción de atributos
-     * @param carta
-     */
-    public Carta(Carta carta)
-    {
-
+        this.imagenCarta = new JLabel(new ImageIcon(getClass().getResource(rutaImagen)));
     }
 
     /**
@@ -143,6 +136,10 @@ public class Carta {
     public boolean getVisibilidad()
     {
         return visibilidad;
+    }
+
+    public JLabel getImagenCarta() {
+        return imagenCarta;
     }
 }
 
