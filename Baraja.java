@@ -73,8 +73,8 @@ public class Baraja {
         baraja.forEach(carta -> carta.setVisibilidad(visibilidad));
     }
 
-    private void rutaImagen()
+    private String rutaImagen()
     {
-
+           return null;
     }
 }

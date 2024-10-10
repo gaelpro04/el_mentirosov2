@@ -10,7 +10,6 @@ public class Juego {
     //que será la baraja con la que se jugará toda la partida
     private ArrayList<Jugador> jugadores;
     private Mesa mesa;
-    private TableroVisual tableroVisual;
     private Baraja baraja;
 
     /**
@@ -21,7 +20,6 @@ public class Juego {
 
         this.jugadores = new ArrayList<>(cantJugadores);
         this.mesa = new Mesa();
-        this.tableroVisual = new TableroVisual();
 
         //El constructor por defecto se tiene que poner
         //48(que es la cantidad de cartas de una baraja española)
@@ -90,14 +88,6 @@ public class Juego {
 
     public void setMesa(Mesa mesa) {
         this.mesa = mesa;
-    }
-
-    public TableroVisual getTableroVisual() {
-        return tableroVisual;
-    }
-
-    public void setTableroVisual(TableroVisual tableroVisual) {
-        this.tableroVisual = tableroVisual;
     }
 
     /**
