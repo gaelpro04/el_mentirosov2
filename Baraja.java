@@ -15,8 +15,8 @@ public class Baraja {
         baraja = new ArrayList<>(48);
 
         for (String palo : bancoPalos) {
-            for (int i = 1; i <= 12; ++i) {
-                baraja.add(new Carta(palo, i, true));
+            for (int i = 1; i <= 10; ++i) {
+                baraja.add(new Carta(palo, i, true, "BarajaEspañola\\" + i + " " + palo + ".png"));
             }
         }
     }
@@ -34,7 +34,6 @@ public class Baraja {
 
         for (String palo : bancoPalos) {
             for (int i = minimo; i <= maximo; ++i) {
-
                 baraja.add(new Carta(palo, i, true));
             }
         }
@@ -73,8 +72,4 @@ public class Baraja {
         baraja.forEach(carta -> carta.setVisibilidad(visibilidad));
     }
 
-    private String rutaImagen()
-    {
-           return null;
-    }
 }
