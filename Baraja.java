@@ -4,7 +4,7 @@ public class Baraja {
 
     //Atributo de la clase(una colección de catas)
     ArrayList<Carta> baraja;
-    String[] bancoPalos = {"oro", "copa", "espada", "basto"};
+    String[] bancoPalos = {"oros", "copas", "espadas", "bastos"};
 
     /**
      * Constructor por preterminado
@@ -16,7 +16,7 @@ public class Baraja {
 
         for (String palo : bancoPalos) {
             for (int i = 1; i <= 10; ++i) {
-                baraja.add(new Carta(palo, i, true, "BarajaEspañola\\" + i + " " + palo + ".png"));
+                baraja.add(new Carta(palo, i, true, "BarajaEspañola/" + i + " " + palo + ".png"));
             }
         }
     }

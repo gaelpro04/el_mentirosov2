@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
 
 
 public class Carta {
@@ -11,6 +12,7 @@ public class Carta {
     private String palo;
     private int valor;
     private JLabel imagenCarta;
+    private JLabel imagenOculta;
     private boolean visibilidad;
 
     /**
@@ -50,6 +52,7 @@ public class Carta {
         this.valor = valor;
         this.visibilidad = visibilidad;
         this.imagenCarta = new JLabel(new ImageIcon(getClass().getResource(rutaImagen)));
+        imagenOculta = new JLabel(new ImageIcon(getClass().getResource("BarajaEspañola/CartaInversa.png")));
     }
 
     /**
@@ -139,7 +142,11 @@ public class Carta {
     }
 
     public JLabel getImagenCarta() {
-        return imagenCarta;
+
+        if (visibilidad) {
+            return imagenCarta;
+        }
+        return imagenOculta;
     }
 }
 
