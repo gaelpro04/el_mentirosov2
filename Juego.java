@@ -1,3 +1,5 @@
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Collections;
@@ -11,6 +13,24 @@ public class Juego {
     private ArrayList<Jugador> jugadores;
     private Mesa mesa;
     private Baraja baraja;
+
+    //Atributos para la interfaz de juego
+    private JFrame frame;
+    private JPanel panelCartas;
+    private JPanel panelControlArriba;
+    private JPanel panelControlAbajo;
+
+    private JMenuBar menuBar;
+    private JMenu menuAyuda;
+    private JMenuItem itemSalir;
+    private JMenuItem itemRegresar;
+
+    private JLabel estadoJuego;
+    private JLabel turno;
+
+    private JButton botonMentira;
+    private JButton botonVerdad;
+    private JButton botonColocarPozo;
 
     /**
      * Constructor del Juego, ingresa la cantidad de jugadores
@@ -35,8 +55,59 @@ public class Juego {
         hacerManos();
     }
 
-    public ArrayList<Jugador> getJugadores() {
-        return jugadores;
+    /**
+     * Método privado que hace la interfaz del juego
+     */
+    private void hacerFrame()
+    {
+        //Crea el frame
+        frame = new JFrame("El mentiroso");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        //Crea los paneles del frame
+        panelCartas = new JPanel();
+        panelControlArriba = new JPanel();
+        panelControlAbajo = new JPanel();
+
+        //Creaciones de botones
+        botonMentira = new JButton("Mentira");
+        botonVerdad = new JButton("Verdad");
+        botonColocarPozo = new JButton("Colocar Pozo");
+        estadoJuego = new JLabel("Estado Juego");
+        turno = new JLabel("Turno");
+
+        //Modificación de paneles
+        panelCartas.setLayout(new BorderLayout());
+        panelCartas.setBackground(new Color(53,101,77));
+        panelControlArriba.add(estadoJuego, BorderLayout.EAST);
+        panelControlArriba.add(turno, BorderLayout.WEST);
+        panelControlAbajo.add(botonMentira, BorderLayout.CENTER);
+        panelControlAbajo.add(botonVerdad, BorderLayout.CENTER);
+        panelControlAbajo.add(botonColocarPozo, BorderLayout.CENTER);
+
+        //Crea la barra menú y menú, junto a sus actionListeners
+        menuBar = new JMenuBar();
+        menuAyuda = new JMenu("Ayuda");
+        itemRegresar = new JMenuItem("Regresar");
+        itemRegresar.addActionListener(evento -> botonRegresar());
+        itemSalir = new JMenuItem("Salir");
+        itemSalir.addActionListener(evento -> botonSalir());
+
+        //Almacén de items, menús en la barra menú y añadir paneles a frame
+        menuAyuda.add(itemRegresar);
+        menuAyuda.add(itemSalir);
+        menuBar.add(menuAyuda);
+        frame.setJMenuBar(menuBar);
+        frame.add(panelCartas);
+        frame.add(panelControlArriba, BorderLayout.NORTH);
+        frame.add(panelControlAbajo, BorderLayout.SOUTH);
+
+
+        //Hacer el frame visible junto a modificaciones
+
+        frame.setSize(800, 700);
+        frame.setVisible(true);
+        frame.setLocationRelativeTo(null);
     }
 
     /**
@@ -78,16 +149,9 @@ public class Juego {
         }
     }
 
-    public void setJugadores(ArrayList<Jugador> jugadores) {
-        this.jugadores = jugadores;
-    }
+    private void setFrame()
+    {
 
-    public Mesa getMesa() {
-        return mesa;
-    }
-
-    public void setMesa(Mesa mesa) {
-        this.mesa = mesa;
     }
 
     /**
@@ -223,6 +287,11 @@ public class Juego {
         return cartasEleccion;
     }
 
+    public void jugarInterfaz()
+    {
+
+    }
+
     /**
      * Método de juego, es decir donde ya se juega
      */
@@ -244,6 +313,7 @@ public class Juego {
         boolean banderaEscoger = false;
         int turnoJugadorVeredictoFinal = 0;
         Jugador ganador = null;
+        hacerFrame();
 
         while (!juegoTerminado) {
 
@@ -332,6 +402,40 @@ public class Juego {
         //Se imprime el ganador
         System.out.println("Ha ganado " + ganador.getNombre() + ", se quedó sin cartas!!");
 
+    }
+
+    //AREA DE BOTONES
+
+    private void botonMentira()
+    {
+
+    }
+
+    private void botonVerdad()
+    {
+
+    }
+
+    private void botonColocarPozo()
+    {
+
+    }
+
+    /**
+     * Método que es el botón para regresar a la interfaz menú
+     */
+    private void botonRegresar()
+    {
+        frame.setVisible(false);
+        Interfaz interfaz = new Interfaz();
+    }
+
+    /**
+     * Método que es el botón para salir del juego
+     */
+    private void botonSalir()
+    {
+        System.exit(0);
     }
 
 }

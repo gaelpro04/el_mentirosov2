@@ -84,7 +84,7 @@ public class Interfaz {
     public void botonJugar()
     {
         frame.setVisible(false);
-        InterfazJuego frameJugar = new InterfazJuego();
+        Juego juego = new Juego(2);
     }
 
     /**
