@@ -135,7 +135,7 @@ public class Juego {
 
         //Aquí se inicia el constructor de cada jugador de la colección de jugadores
         for (int i = 0; i < jugadores.size(); i++) {
-            jugadores.get(i).setNombre("Jugador"+(i+1));
+            jugadores.get(i).setNombre("Jugador "+(i+1));
         }
 
         //Se revuelve la baraja para poder asignar las cartas más fácil a cada jugador
@@ -191,6 +191,7 @@ public class Juego {
 
                 //Si elige verdad el jugador simplemente se imprimen las cartas reales
                 //que metió el jugador al pozo
+                estadoJuego.setText("El jugador ha metido al pozo: \n");
                 System.out.println("El jugador ha metido al pozo: \n");
                 for (Carta carta : cartasELeccion.getBaraja()) {
                     System.out.println("Ha metido: " + carta.toString());
@@ -205,6 +206,7 @@ public class Juego {
                 //donde se hace un ciclo que su limite es la cantidad de cartas que seleccionó el jugador
                 //pero las cartas que se imprimirán a los demás jugadores serán falsas es decir las que
                 //verdaderamente no metió el jugador
+                estadoJuego.setText("El jugador ha metido al pozo: \n");
                 System.out.println("El jugador ha metido al pozo: \n");
                 for (int i = 0; i < cartasELeccion.getBaraja().size(); ++i) {
 
@@ -288,6 +290,7 @@ public class Juego {
             }
 
             //Lectura de indice de la mano
+            estadoJuego.setText("Eliga las cartas a meter al pozo(máximo 3)");
             System.out.println("Eliga las cartas a meter al pozo(máximo 3) o si ya quieres salir oprime \"-1\" \n");
             eleccion = respuesta.nextInt();
 
@@ -353,12 +356,13 @@ public class Juego {
 
             if (!finDelJuego(jugadores)) {
 
-                turno.setText("===Turno del jugador " + jugadorActual.getNombre() + "===");
+                turno.setText("Turno del jugador " + jugadorActual.getNombre());
 
 
                 //BanderaEscoger como se mencionó se usa una vez para ya poder acceder a la lectura
                 //si mentió el jugador anterior o no
                 if (banderaEscoger) {
+                    estadoJuego.setText("¿Es verdad o mentira?");
                     System.out.println("Es...");
                     System.out.println("mentira\n");
                     System.out.println("verdad\n");
@@ -367,6 +371,7 @@ public class Juego {
                     //Se analiza el verdicto del jugador anterior con el actual y si coinciden en la mentira
                     //Se lleva todo el pozo el jugador mentiroso
                     if (veredictoNuevo.equals("mentira") && veredictoFinal.equals("mentira")) {
+                        estadoJuego.setText("Al parecer se desubrió el mentiroso!!!\n");
                         System.out.println("Al parecer se desubrió el mentiroso!!!\n");
 
                         //Ciclo para agregar las cartas del pozo a la mano del jugador, donde turnoJugadorVeredictoFinal
@@ -379,6 +384,7 @@ public class Juego {
                         //Si no coincide el veredictoNuevo de mentira con el veredicto anterior, el jugadorActual toma
                         //todas las cartas del pozo
                     } else if (veredictoNuevo.equals("mentira") && veredictoFinal.equals("verdad")) {
+                        estadoJuego.setText("Al parecer si era verdad...");
                         System.out.println("Al parecer si era verdad...");
 
                         //En este no es necesario la variable del indice anterior ya que solo se almacenan en el jugador
@@ -393,6 +399,7 @@ public class Juego {
                 //Método para seleccionar las cartas a poner en el pozo donde retorna las tres cartas seleccionadas
                 cartasEleccion = sistemaEleccionCartas(jugadorActual);
 
+                estadoJuego.setText("¿Quieres mentir o verdad?");
                 System.out.println("Quieres...\n");
                 System.out.println("mentir\n");
                 System.out.println("verdad\n");
@@ -427,6 +434,7 @@ public class Juego {
         }
 
         //Se imprime el ganador
+        estadoJuego.setText("Ha ganado " + ganador.getNombre() + ", se quedó sin cartas!!");
         System.out.println("Ha ganado " + ganador.getNombre() + ", se quedó sin cartas!!");
 
     }
