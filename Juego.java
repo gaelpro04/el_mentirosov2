@@ -15,7 +15,7 @@ public class Juego {
     private ArrayList<Jugador> jugadores;
     private Mesa mesa;
     private Baraja baraja;
-    private int cantJugadores;
+    private final int cantJugadores;
 
     //Atributos para la interfaz de juego
     private JFrame frame;
@@ -28,7 +28,6 @@ public class Juego {
     private JMenuBar menuBar;
     private JMenu menuAyuda;
     private JMenuItem itemSalir;
-    private JMenuItem itemRegresar;
 
     private JLabel estadoJuego;
     private JLabel turno;
@@ -74,6 +73,7 @@ public class Juego {
         //Crea el frame
         frame = new JFrame("El mentiroso");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
 
         //Crea los paneles del frame
         panelCartas = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -93,6 +93,9 @@ public class Juego {
         //Modificación de paneles
         panelCartas.setLayout(new FlowLayout(FlowLayout.LEFT));
         panelCartas.setBackground(new Color(53,101,77));
+
+        panelControlArribaIzquierda.setLayout(new FlowLayout());
+        panelControlArribaDerecha.setLayout(new FlowLayout());
         panelControlArribaIzquierda.add(turno, BorderLayout.WEST);
         panelControlArribaDerecha.add(estadoJuego, BorderLayout.EAST);
         panelControlArribaDerecha.add(mentiraOverdad, BorderLayout.EAST);
@@ -105,13 +108,10 @@ public class Juego {
         //Crea la barra menú y menú, junto a sus actionListeners
         menuBar = new JMenuBar();
         menuAyuda = new JMenu("Ayuda");
-        itemRegresar = new JMenuItem("Regresar");
-        itemRegresar.addActionListener(evento -> botonRegresar());
         itemSalir = new JMenuItem("Salir");
         itemSalir.addActionListener(evento -> botonSalir());
 
         //Almacén de items, menús en la barra menú y añadir paneles a frame
-        menuAyuda.add(itemRegresar);
         menuAyuda.add(itemSalir);
         menuBar.add(menuAyuda);
         frame.setJMenuBar(menuBar);
@@ -134,9 +134,6 @@ public class Juego {
      */
     private void hacerManos()
     {
-        //Se crea una variable Scanner para poder leer los nombres de cada jugador
-        Scanner respuesta = new Scanner(System.in);
-
 
         //Aquí se inicia el constructor de cada jugador de la colección de jugadores
         for (int i = 0; i < jugadores.size(); i++) {
@@ -462,15 +459,6 @@ public class Juego {
     private void botonColocarPozo()
     {
 
-    }
-
-    /**
-     * Método que es el botón para regresar a la interfaz menú
-     */
-    private void botonRegresar()
-    {
-        frame.setVisible(false);
-        Interfaz interfaz = new Interfaz(cantJugadores);
     }
 
     /**

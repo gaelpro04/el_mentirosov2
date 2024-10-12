@@ -7,7 +7,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        new Interfaz(4);
+        new Juego(4).jugar();
 
 
     }

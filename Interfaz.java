@@ -83,7 +83,7 @@ public class Interfaz {
      * Método del botón Jugar
      */
     public void botonJugar() {
-        frame.setVisible(false);
+        frame.dispose();
         new Juego(cantidadJugadores).jugar();
     }
 
