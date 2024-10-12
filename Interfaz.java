@@ -74,7 +74,7 @@ public class Interfaz {
         containerPane.add(panelBotones, BorderLayout.CENTER);
 
         frame.pack();
-        frame.setSize(800, 700);  // Tamaño inicial de la ventana
+        frame.setSize(1378, 789);  // Tamaño inicial de la ventana
         frame.setLocationRelativeTo(null);  // Centrar la ventana en la pantalla
         frame.setVisible(true);
     }
@@ -84,8 +84,7 @@ public class Interfaz {
      */
     public void botonJugar() {
         frame.setVisible(false);
-        Juego juego = new Juego(cantidadJugadores);
-        juego.jugar();
+        new Juego(cantidadJugadores).jugar();
     }
 
     /**
