@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.concurrent.Flow;
 import javax.swing.*;
 import javax.swing.border.Border;
 
@@ -6,8 +7,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Juego juego = new Juego(4);
-        juego.jugar();
+        new Interfaz(4);
+
 
     }
 }

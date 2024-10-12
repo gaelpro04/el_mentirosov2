@@ -4,9 +4,10 @@ import javax.swing.*;
 public class Interfaz {
 
     private JFrame frame;
+    int cantidadJugadores;
 
-    public Interfaz()
-    {
+    public Interfaz(int cantidadJugadores) {
+        this.cantidadJugadores = cantidadJugadores;
         makeFrame();
     }
 
@@ -29,7 +30,7 @@ public class Interfaz {
         // El contentPane es el panel principal donde se colocan todos los componentes visuales (botones, etiquetas, paneles, etc.)
         // Cada JFrame tiene un contentPane donde se añaden los elementos gráficos.
         containerPane.add(tituloJuego, BorderLayout.NORTH);
-        containerPane.add(Box.createRigidArea(new Dimension(0,15)));
+        containerPane.add(Box.createRigidArea(new Dimension(0, 15)));
 
         // Panel para los botones
         JPanel panelBotones = new JPanel();
@@ -64,7 +65,7 @@ public class Interfaz {
         // Botón para salir:
         JButton botonSalir = new JButton("Salir");
         botonSalir.setAlignmentX(Component.CENTER_ALIGNMENT);
-        botonSalir.setPreferredSize(new Dimension(150,40));
+        botonSalir.setPreferredSize(new Dimension(150, 40));
         botonSalir.setMaximumSize(botonSalir.getPreferredSize());
         botonSalir.addActionListener(evento -> botonSalir());
         panelBotones.add(botonSalir);
@@ -81,30 +82,23 @@ public class Interfaz {
     /**
      * Método del botón Jugar
      */
-    public void botonJugar()
-    {
+    public void botonJugar() {
         frame.setVisible(false);
-        Juego juego = new Juego(2);
+        Juego juego = new Juego(cantidadJugadores);
+        juego.jugar();
     }
 
     /**
      * Método del botón Acerca de
      */
-    public void botonAcerca()
-    {
+    public void botonAcerca() {
         System.out.println("Simon2");
     }
 
     /**
      * Método para el bóton salir
      */
-    public void botonSalir()
-    {
+    public void botonSalir() {
         System.exit(0);
     }
-
-    public static void main2(String[] args) {
-        new Interfaz();
-    }
-
 }

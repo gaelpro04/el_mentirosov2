@@ -15,6 +15,7 @@ public class Juego {
     private ArrayList<Jugador> jugadores;
     private Mesa mesa;
     private Baraja baraja;
+    private int cantJugadores;
 
     //Atributos para la interfaz de juego
     private JFrame frame;
@@ -45,6 +46,7 @@ public class Juego {
      */
     public Juego(int cantJugadores) {
 
+        this.cantJugadores = cantJugadores;
         this.jugadores = new ArrayList<>(cantJugadores);
         this.mesa = new Mesa();
 
@@ -74,7 +76,7 @@ public class Juego {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //Crea los paneles del frame
-        panelCartas = new JPanel();
+        panelCartas = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panelControlArriba = new JPanel();
         panelControlAbajo = new JPanel();
         panelControlArribaIzquierda = new JPanel();
@@ -89,7 +91,7 @@ public class Juego {
         mentiraOverdad = new JLabel("| Mentira o verdad");
 
         //Modificación de paneles
-        panelCartas.setLayout(new BorderLayout());
+        panelCartas.setLayout(new FlowLayout(FlowLayout.LEFT));
         panelCartas.setBackground(new Color(53,101,77));
         panelControlArribaIzquierda.add(turno, BorderLayout.WEST);
         panelControlArribaDerecha.add(estadoJuego, BorderLayout.EAST);
@@ -120,7 +122,7 @@ public class Juego {
 
         //Hacer el frame visible junto a modificaciones
 
-        frame.setSize(800, 700);
+        frame.setSize(1378, 789);
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
     }
@@ -282,6 +284,9 @@ public class Juego {
         while (cartasEleccion.getBaraja().size() != 3 && eleccion != -1) {
 
             System.out.println("Cartas de " + jugador.getNombre() + "\n");
+            for (Carta carta : jugador.getMano()) {
+                panelCartas.add(carta.getImagenCarta(), BorderLayout.SOUTH);
+            }
             jugador.mostrarMano();
 
             //Se imprime si ya hubo un ciclo anterior
@@ -465,7 +470,7 @@ public class Juego {
     private void botonRegresar()
     {
         frame.setVisible(false);
-        Interfaz interfaz = new Interfaz();
+        Interfaz interfaz = new Interfaz(cantJugadores);
     }
 
     /**
