@@ -18,6 +18,8 @@ public class Juego {
     private JFrame frame;
     private JPanel panelCartas;
     private JPanel panelControlArriba;
+    private JPanel panelControlArribaIzquierda;
+    private JPanel panelControlArribaDerecha;
     private JPanel panelControlAbajo;
 
     private JMenuBar menuBar;
@@ -68,6 +70,8 @@ public class Juego {
         panelCartas = new JPanel();
         panelControlArriba = new JPanel();
         panelControlAbajo = new JPanel();
+        panelControlArribaIzquierda = new JPanel();
+        panelControlArribaDerecha = new JPanel();
 
         //Creaciones de botones
         botonMentira = new JButton("Mentira");
@@ -79,8 +83,10 @@ public class Juego {
         //Modificación de paneles
         panelCartas.setLayout(new BorderLayout());
         panelCartas.setBackground(new Color(53,101,77));
-        panelControlArriba.add(estadoJuego, BorderLayout.EAST);
-        panelControlArriba.add(turno, BorderLayout.WEST);
+        panelControlArribaIzquierda.add(turno, BorderLayout.WEST);
+        panelControlArribaDerecha.add(estadoJuego, BorderLayout.EAST);
+        panelControlArriba.add(panelControlArribaIzquierda, BorderLayout.WEST);
+        panelControlArriba.add(panelControlArribaDerecha, BorderLayout.EAST);
         panelControlAbajo.add(botonMentira, BorderLayout.CENTER);
         panelControlAbajo.add(botonVerdad, BorderLayout.CENTER);
         panelControlAbajo.add(botonColocarPozo, BorderLayout.CENTER);
