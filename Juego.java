@@ -135,8 +135,7 @@ public class Juego {
 
         //Aquí se inicia el constructor de cada jugador de la colección de jugadores
         for (int i = 0; i < jugadores.size(); i++) {
-            System.out.println("Ingresa el nombre del jugador " + (i+1));
-            jugadores.get(i).setNombre(respuesta.next());
+            jugadores.get(i).setNombre("Jugador"+(i+1));
         }
 
         //Se revuelve la baraja para poder asignar las cartas más fácil a cada jugador
@@ -354,7 +353,7 @@ public class Juego {
 
             if (!finDelJuego(jugadores)) {
 
-                System.out.println("===Turno del jugador " + jugadorActual.getNombre() + "===");
+                turno.setText("===Turno del jugador " + jugadorActual.getNombre() + "===");
 
 
                 //BanderaEscoger como se mencionó se usa una vez para ya poder acceder a la lectura

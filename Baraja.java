@@ -11,8 +11,8 @@ public class Baraja {
      */
     public  Baraja(int tamanio)
     {
-        //Una baraja española por preterminado tiene 48 cartas
-        baraja = new ArrayList<>(48);
+        //Una baraja española para el juego tiene 40 cartas
+        baraja = new ArrayList<>(40);
 
         for (String palo : bancoPalos) {
             for (int i = 1; i <= 10; ++i) {
