@@ -31,6 +31,7 @@ public class Juego {
 
     private JLabel estadoJuego;
     private JLabel turno;
+    private  JLabel mentiraOverdad;
 
     private JButton botonMentira;
     private JButton botonVerdad;
@@ -85,12 +86,14 @@ public class Juego {
         botonColocarPozo = new JButton("Colocar Pozo");
         estadoJuego = new JLabel("Estado Juego");
         turno = new JLabel("Turno");
+        mentiraOverdad = new JLabel("| Mentira o verdad");
 
         //Modificación de paneles
         panelCartas.setLayout(new BorderLayout());
         panelCartas.setBackground(new Color(53,101,77));
         panelControlArribaIzquierda.add(turno, BorderLayout.WEST);
         panelControlArribaDerecha.add(estadoJuego, BorderLayout.EAST);
+        panelControlArribaDerecha.add(mentiraOverdad, BorderLayout.EAST);
         panelControlArriba.add(panelControlArribaIzquierda, BorderLayout.WEST);
         panelControlArriba.add(panelControlArribaDerecha, BorderLayout.EAST);
         panelControlAbajo.add(botonMentira, BorderLayout.CENTER);
@@ -191,7 +194,6 @@ public class Juego {
 
                 //Si elige verdad el jugador simplemente se imprimen las cartas reales
                 //que metió el jugador al pozo
-                estadoJuego.setText("El jugador ha metido al pozo: \n");
                 System.out.println("El jugador ha metido al pozo: \n");
                 for (Carta carta : cartasELeccion.getBaraja()) {
                     System.out.println("Ha metido: " + carta.toString());
@@ -206,7 +208,6 @@ public class Juego {
                 //donde se hace un ciclo que su limite es la cantidad de cartas que seleccionó el jugador
                 //pero las cartas que se imprimirán a los demás jugadores serán falsas es decir las que
                 //verdaderamente no metió el jugador
-                estadoJuego.setText("El jugador ha metido al pozo: \n");
                 System.out.println("El jugador ha metido al pozo: \n");
                 for (int i = 0; i < cartasELeccion.getBaraja().size(); ++i) {
 
@@ -356,7 +357,7 @@ public class Juego {
 
             if (!finDelJuego(jugadores)) {
 
-                turno.setText("Turno del jugador " + jugadorActual.getNombre());
+                turno.setText("Turno del jugador " + jugadorActual.getNombre() + " |");
 
 
                 //BanderaEscoger como se mencionó se usa una vez para ya poder acceder a la lectura
@@ -371,7 +372,7 @@ public class Juego {
                     //Se analiza el verdicto del jugador anterior con el actual y si coinciden en la mentira
                     //Se lleva todo el pozo el jugador mentiroso
                     if (veredictoNuevo.equals("mentira") && veredictoFinal.equals("mentira")) {
-                        estadoJuego.setText("Al parecer se desubrió el mentiroso!!!\n");
+                        mentiraOverdad.setText("| Al parecer se desubrió el mentiroso!!!\n");
                         System.out.println("Al parecer se desubrió el mentiroso!!!\n");
 
                         //Ciclo para agregar las cartas del pozo a la mano del jugador, donde turnoJugadorVeredictoFinal
@@ -384,7 +385,7 @@ public class Juego {
                         //Si no coincide el veredictoNuevo de mentira con el veredicto anterior, el jugadorActual toma
                         //todas las cartas del pozo
                     } else if (veredictoNuevo.equals("mentira") && veredictoFinal.equals("verdad")) {
-                        estadoJuego.setText("Al parecer si era verdad...");
+                        mentiraOverdad.setText("| Al parecer si era verdad...");
                         System.out.println("Al parecer si era verdad...");
 
                         //En este no es necesario la variable del indice anterior ya que solo se almacenan en el jugador
