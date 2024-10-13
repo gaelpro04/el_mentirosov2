@@ -24,6 +24,7 @@ public class Juego {
     private JPanel panelControlArribaIzquierda;
     private JPanel panelControlArribaDerecha;
     private JPanel panelControlAbajo;
+    private JPanel panelMano;
 
     private JMenuBar menuBar;
     private JMenu menuAyuda;
@@ -77,6 +78,8 @@ public class Juego {
 
         //Crea los paneles del frame
         panelCartas = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        panelMano = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panelCartas.add(panelMano, BorderLayout.SOUTH);
         panelControlArriba = new JPanel();
         panelControlAbajo = new JPanel();
         panelControlArribaIzquierda = new JPanel();
@@ -121,8 +124,7 @@ public class Juego {
 
 
         //Hacer el frame visible junto a modificaciones
-
-        frame.setSize(1378, 789);
+        frame.setSize(800, 700);
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
     }
@@ -282,7 +284,7 @@ public class Juego {
 
             System.out.println("Cartas de " + jugador.getNombre() + "\n");
             for (Carta carta : jugador.getMano()) {
-                panelCartas.add(carta.getImagenCarta(), BorderLayout.SOUTH);
+                panelMano.add(carta.getImagenCarta());
             }
             jugador.mostrarMano();
 
