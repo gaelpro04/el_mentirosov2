@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Collections;
@@ -15,7 +17,6 @@ public class Juego {
     private ArrayList<Jugador> jugadores;
     private Mesa mesa;
     private Baraja baraja;
-    private final int cantJugadores;
 
     //Atributos para la interfaz de juego
     private JFrame frame;
@@ -25,6 +26,8 @@ public class Juego {
     private JPanel panelControlArribaDerecha;
     private JPanel panelControlAbajo;
     private JPanel panelMano;
+    private JPanel panelPozo;
+    private JPanel panelCartasSeleccionadas;
 
     private JMenuBar menuBar;
     private JMenu menuAyuda;
@@ -46,7 +49,6 @@ public class Juego {
      */
     public Juego(int cantJugadores) {
 
-        this.cantJugadores = cantJugadores;
         this.jugadores = new ArrayList<>(cantJugadores);
         this.mesa = new Mesa();
 
@@ -77,9 +79,15 @@ public class Juego {
         frame.setLayout(new BorderLayout());
 
         //Crea los paneles del frame
-        panelCartas = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        panelMano = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panelCartas = new JPanel();
+        panelCartas.setLayout(new BorderLayout());
+        panelMano = new JPanel();
+        panelPozo = new JPanel(new BorderLayout());
+        panelCartasSeleccionadas = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panelMano.setLayout(new FlowLayout(FlowLayout.LEFT));
         panelCartas.add(panelMano, BorderLayout.SOUTH);
+        panelCartas.add(panelPozo, BorderLayout.CENTER);
+        panelCartas.add(panelCartasSeleccionadas, BorderLayout.NORTH);
         panelControlArriba = new JPanel();
         panelControlAbajo = new JPanel();
         panelControlArribaIzquierda = new JPanel();
@@ -94,8 +102,10 @@ public class Juego {
         mentiraOverdad = new JLabel("| Mentira o verdad");
 
         //Modificación de paneles
-        panelCartas.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panelMano.setBackground(new Color(53,101,77));
         panelCartas.setBackground(new Color(53,101,77));
+        panelCartasSeleccionadas.setBackground(new Color(53,101,77));
+        panelPozo.setBackground(new Color(53,101,77));
 
         panelControlArribaIzquierda.setLayout(new FlowLayout());
         panelControlArribaDerecha.setLayout(new FlowLayout());
@@ -276,12 +286,14 @@ public class Juego {
         Baraja cartasEleccion = new Baraja();
         Scanner respuesta = new Scanner(System.in);
         int eleccion = 0;
+        panelCartasSeleccionadas.removeAll();
 
         //El ciclo parará hasta halla 3 cartas en su contenido o a menos
         //que el usuario ingrese -1 para parar el ciclo solo seleccionar
         //menos de las tres cartas
         while (cartasEleccion.getBaraja().size() != 3 && eleccion != -1) {
 
+            panelMano.removeAll();
             System.out.println("Cartas de " + jugador.getNombre() + "\n");
             for (Carta carta : jugador.getMano()) {
                 panelMano.add(carta.getImagenCarta());
@@ -294,9 +306,16 @@ public class Juego {
                 cartasEleccion.mostrarEnConsola();
             }
 
+            if (!cartasEleccion.getBaraja().isEmpty()) {
+                for (Carta carta : cartasEleccion.getBaraja()) {
+                    panelCartasSeleccionadas.add(carta.getImagenCarta());
+                }
+            }
+
             //Lectura de indice de la mano
             estadoJuego.setText("Eliga las cartas a meter al pozo(máximo 3)");
             System.out.println("Eliga las cartas a meter al pozo(máximo 3) o si ya quieres salir oprime \"-1\" \n");
+
             eleccion = respuesta.nextInt();
 
             //Como se mencionó al inicio del ciclo, si el jugador selecciona -1 quiere decir
@@ -308,6 +327,7 @@ public class Juego {
             //Se saca la carta y se mete en la mano del jugador
             cartasEleccion.getBaraja().add(jugador.getMano().remove(eleccion));
         }
+        panelCartasSeleccionadas.add(jugador.getMano().get(eleccion).getImagenCarta());
 
         //Como la ultima impresión de la ultima carta seleccionada no se imprime
         //se vuelve imprimir las cartas seleccionadas aquí
