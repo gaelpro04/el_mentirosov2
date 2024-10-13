@@ -300,6 +300,7 @@ public class Juego {
                     }
                 }
             });
+            panelMano.add(cartaMouse);
         }
         return cartaEleccion;
     }
