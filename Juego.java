@@ -3,7 +3,6 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.Collections;
 import java.util.Random;
 
@@ -17,6 +16,15 @@ public class Juego {
     private ArrayList<Jugador> jugadores;
     private Mesa mesa;
     private Baraja baraja;
+    private boolean listener;
+    private String veredicto;
+    private String veredictoFinal;
+    private  boolean descubrir;
+    private Carta cartaOculta;
+    private Baraja cartasMentira;
+    private Baraja cartasEleccion;
+    private boolean desactivarMouseListener;
+    private int turnoActual;
 
     //Atributos para la interfaz de juego
     private JFrame frame;
@@ -40,6 +48,7 @@ public class Juego {
     private JButton botonMentira;
     private JButton botonVerdad;
     private JButton botonColocarPozo;
+    private  JButton botonSiguienteTurno;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -51,6 +60,14 @@ public class Juego {
 
         this.jugadores = new ArrayList<>(cantJugadores);
         this.mesa = new Mesa();
+        listener = true;
+        veredicto = null;
+        veredictoFinal = null;
+        descubrir = false;
+        cartaOculta = new Carta("oros",1,false,"BarajaEspañola/CartaInversa.png");
+        cartasEleccion = new Baraja();
+        turnoActual = 0;
+        desactivarMouseListener = true;
 
         //El constructor por defecto se tiene que poner
         //48(que es la cantidad de cartas de una baraja española)
@@ -94,9 +111,15 @@ public class Juego {
         panelControlArribaDerecha = new JPanel();
 
         //Creaciones de botones
-        botonMentira = new JButton(" Es Mentira");
-        botonVerdad = new JButton(" Es Verdad");
+        botonMentira = new JButton("Mentira");
+        botonVerdad = new JButton("Verdad");
         botonColocarPozo = new JButton("Colocar en Pozo");
+        botonSiguienteTurno = new JButton("Siguiente turno");
+        botonSiguienteTurno.addActionListener(evento -> botonSiguienteTurno());
+        botonMentira.addActionListener(evento -> botonMentira());
+        botonVerdad.addActionListener(evento -> botonVerdad());
+        botonColocarPozo.addActionListener(evento -> botonColocarPozo());
+
         estadoJuego = new JLabel("Estado Juego");
         turno = new JLabel("Turno");
         mentiraOverdad = new JLabel("| Mentira o verdad");
@@ -114,6 +137,7 @@ public class Juego {
         panelControlArribaDerecha.add(mentiraOverdad, BorderLayout.EAST);
         panelControlArriba.add(panelControlArribaIzquierda, BorderLayout.WEST);
         panelControlArriba.add(panelControlArribaDerecha, BorderLayout.EAST);
+        panelControlAbajo.add(botonSiguienteTurno, BorderLayout.CENTER);
         panelControlAbajo.add(botonMentira, BorderLayout.CENTER);
         panelControlAbajo.add(botonVerdad, BorderLayout.CENTER);
         panelControlAbajo.add(botonColocarPozo, BorderLayout.CENTER);
@@ -176,140 +200,54 @@ public class Juego {
         }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private void setFrame()
+    private void cartasSeleccionables(Jugador jugador)
     {
+        if (desactivarMouseListener) {
+            panelCartasSeleccionadas.removeAll();
 
-    }
+            for (Carta carta : jugador.getMano()) {
+                carta.getImagenCarta().addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        if (listener) {
+                            if (cartasEleccion.getBaraja().size() < 3) {
+                                panelCartasSeleccionadas.add(carta.getImagenCarta());
+                                cartasEleccion.getBaraja().add(carta);
 
-    /**
-     * Método para seleccionar el veredicto del jugador y que hacer con las cartas
-     * @param veredicto
-     */
-    public String setVerdadOMentira(String veredicto, Baraja cartasELeccion, Jugador jugador)
-    {
-        //Consta de una variable para crear los indices para la baraja mentira
-        Random random = new Random();
-        //Cartas mentira sirve por si elige mentira, entonces obtendrá cartas de la misma mano
-        //del jugador(que no se sacarán solo se copiaran) y esas se imprimiran al usuario
-        Baraja cartasMentira = new Baraja();
-        //Será el valor de retorno
-        String veredictoFinal = "";
+                                panelCartasSeleccionadas.repaint();
+                                panelCartasSeleccionadas.revalidate();
+                                jugador.getMano().remove(carta);
 
-        //Switch case que actúa en los dos casos posibles
-        switch (veredicto) {
-            case "verdad":
 
-                //Si elige verdad el jugador simplemente se imprimen las cartas reales
-                //que metió el jugador al pozo
-                System.out.println("El jugador ha metido al pozo: \n");
-                for (Carta carta : cartasELeccion.getBaraja()) {
-                    System.out.println("Ha metido: " + carta.toString());
-                }
+                            } else {
+                                estadoJuego.setText("Has alcanzado el máximo de cartas");
+                            }
+                        } else {
+                            estadoJuego.setText("Debes colocar las cartas al pozo");
+                        }
 
-                //Se asigna el valor de retorno
-                veredictoFinal = "verdad";
-                break;
-            case "mentir":
 
-                //Aquí es un poco más complejo donde se utiliza de la variable cartas mentira
-                //donde se hace un ciclo que su limite es la cantidad de cartas que seleccionó el jugador
-                //pero las cartas que se imprimirán a los demás jugadores serán falsas es decir las que
-                //verdaderamente no metió el jugador
-                System.out.println("El jugador ha metido al pozo: \n");
-                for (int i = 0; i < cartasELeccion.getBaraja().size(); ++i) {
 
-                    //se pone menos uno porque recordar que size() imprime la cantidad de objetos en la colección,
-                    //más no el número de indices
-                    cartasMentira.getBaraja().add(jugador.getMano().get(random.nextInt(jugador.getMano().size() - 1)));
 
-                    //Se imprimen las cartas erroneas
-                    System.out.println("Ha metido: " + cartasMentira.getBaraja().get(i).toString());
-                }
-                veredictoFinal = "mentira";
-                break;
-        }
-        //Ya por ultimo se retorna el veredicto.
-        return veredictoFinal;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Método que determina si es el fin del juego(cuando un jugador se queda sin cartas)
-     * @param jugadores
-     * @return
-     */
-    public boolean finDelJuego(ArrayList<Jugador> jugadores)
-    {
-        //Con uso de flujos y lambdas se puede saber si un jugador
-        //tiene su mano vacia(queriendo decir que el juego ya acabó)
-        return jugadores.stream()
-                .anyMatch(jugador -> jugador.getMano().isEmpty());
-
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Método que regresa el jugador ganador(Se requiere del método finDelJuego)
-     * @param jugadores
-     * @return
-     */
-    public Jugador setGanador(ArrayList<Jugador> jugadores)
-    {
-        //Con apoyo de flujos y lambdas se puede obtener el jugador con la mano vacía
-        //ademas se utiliza de .orElse para brindar seguridad al código.
-        return jugadores.stream()
-                .filter(jungador -> jungador.getMano().isEmpty())
-                .findAny()
-                .orElse(null);
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Método para seleccionar las cartas a poner al pozo
-     * @param jugador
-     * @return
-     */
-    public Baraja sistemaEleccionCartas(Jugador jugador)
-    {
-        Baraja cartaEleccion = new Baraja();
-        panelCartasSeleccionadas.removeAll();
-
-        for (Carta carta : jugador.getMano()) {
-            JLabel cartaMouse = carta.getImagenCarta();
-
-            cartaMouse.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-
-                    if (cartaEleccion.getBaraja().size() < 3) {
-                        cartaEleccion.getBaraja().add(carta);
-                        panelCartasSeleccionadas.add(carta.getImagenCarta());
-
-                        panelCartasSeleccionadas.revalidate();
-                        panelCartasSeleccionadas.repaint();
-
-                    } else {
-                        estadoJuego.setText("Has alcanzado el maximo");
                     }
-                }
-            });
-            panelMano.add(cartaMouse);
+                });
+            }
         }
-        return cartaEleccion;
+
+
+
+
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public void jugarInterfaz()
+    private void mostrarMano(Jugador jugador)
     {
-
+        panelMano.removeAll();
+        for (Carta carta : jugador.getMano()) {
+            panelMano.add(carta.getImagenCarta());
+        }
+        panelMano.repaint();
+        panelMano.revalidate();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -319,115 +257,12 @@ public class Juego {
      */
     public void jugar()
     {
-        //Variables que constan del turnoActual donde estará cambiando cada iteracion
-        //un booleano para saber si el juego terminó, un Scanner para lectura de datos
-        //VeredictoFinal, que este es para elegir si el usuario quiere mentira o verdad
-        //Bandera escoger es una bandera de solo uso, para la primera iteación ya que
-        //no hay cartas en el pozo que analizar al principio y el turno de jugador del
-        //veredicto final que este nos servirá por si un jugador decide decir que es mentira
-        //lo que dijo el jugador anterior, y si es verdad lo que dice se utiliza de la variable
-        //para acceder al indice de ese jugador y almacenar todas las cartas ahí, por ultimo
-        //un objeto de tipo Jugador llamado ganador para guardar el ganador en ese objeto
-        int turnoActual = 0;
-        boolean juegoTerminado = false;
-        Scanner respuesta = new Scanner(System.in);
-        String veredictoFinal = "";
-        boolean banderaEscoger = false;
-        int turnoJugadorVeredictoFinal = 0;
-        Jugador ganador = null;
         hacerFrame();
-
-        while (!juegoTerminado) {
-
-            //Variables temporales, JugadorActual para mejor legibilidad del jugador
-            //que se esta jugando actualmente, cartasEleccion que se utiliza cuando los
-            //jugadores eligen que cartas usar
-            Jugador jugadorActual = jugadores.get(turnoActual);
-            Baraja cartasEleccion = new Baraja();
-            int indiceEleccion = 0;
-
-            if (!finDelJuego(jugadores)) {
-
-                turno.setText("Turno del " + jugadorActual.getNombre() + " |");
+        turno.setText("Turno de jugador: " + (turnoActual+1));
+        mostrarMano(jugadores.get(turnoActual));
+        cartasSeleccionables(jugadores.get(turnoActual));
 
 
-                //BanderaEscoger como se mencionó se usa una vez para ya poder acceder a la lectura
-                //si mentió el jugador anterior o no
-                if (banderaEscoger) {
-                    estadoJuego.setText("¿Es verdad o mentira?");
-                    System.out.println("Es...");
-                    System.out.println("mentira\n");
-                    System.out.println("verdad\n");
-                    String veredictoNuevo = respuesta.next();
-
-                    //Se analiza el verdicto del jugador anterior con el actual y si coinciden en la mentira
-                    //Se lleva todo el pozo el jugador mentiroso
-                    if (veredictoNuevo.equals("mentira") && veredictoFinal.equals("mentira")) {
-                        mentiraOverdad.setText("| Al parecer se desubrió el mentiroso!!!\n");
-                        System.out.println("Al parecer se desubrió el mentiroso!!!\n");
-
-                        //Ciclo para agregar las cartas del pozo a la mano del jugador, donde turnoJugadorVeredictoFinal
-                        //es una variable timpo int del indice del jugador anterior
-                        for (int i = 0; i < mesa.tamanioPozo(); ) {
-                            mesa.getPozo().getBaraja().getFirst().setVisibilidad(true);
-                            jugadores.get(turnoJugadorVeredictoFinal).getMano().add(mesa.getPozo().getBaraja().removeFirst());
-                        }
-
-                        //Si no coincide el veredictoNuevo de mentira con el veredicto anterior, el jugadorActual toma
-                        //todas las cartas del pozo
-                    } else if (veredictoNuevo.equals("mentira") && veredictoFinal.equals("verdad")) {
-                        mentiraOverdad.setText("| Al parecer si era verdad...");
-                        System.out.println("Al parecer si era verdad...");
-
-                        //En este no es necesario la variable del indice anterior ya que solo se almacenan en el jugador
-                        //actual
-                        for (int i = 0; i < mesa.tamanioPozo(); ) {
-                            mesa.getPozo().getBaraja().getFirst().setVisibilidad(true);
-                            jugadorActual.getMano().add(mesa.getPozo().getBaraja().removeFirst());
-                        }
-                    }
-                }
-
-                //Método para seleccionar las cartas a poner en el pozo donde retorna las tres cartas seleccionadas
-                cartasEleccion = sistemaEleccionCartas(jugadorActual);
-
-                estadoJuego.setText("¿Quieres mentir o verdad?");
-                System.out.println("Quieres...\n");
-                System.out.println("mentir\n");
-                System.out.println("verdad\n");
-
-                //En este mismo método se lee el veredicto del jugador, donde el método almacena las cartas en
-                //el pozo y crea el veredicto para el siguiente jugador, además retotrna el veredicto pero en palabra
-                //para poder comparalo con el veredicto del siguiente jugador
-                veredictoFinal = setVerdadOMentira(respuesta.next(), cartasEleccion, jugadorActual);
-
-                //Se mete al pozo pero ocultadas par asimular el pozo(las cartas deben estar volteadas)
-                for (Carta carta : cartasEleccion.getBaraja()) {
-                    carta.setVisibilidad(false);
-                    mesa.getPozo().getBaraja().add(carta);
-                }
-
-                //Se imprime el pozo la variable bandera se torna true.
-                System.out.println("===Pozo===\n");
-                mesa.getPozo().mostrarEnConsola();
-                banderaEscoger = true;
-
-                //En dado caso que nose cumpla la condición que es el fin del juego(quiere decir que ya hay un jugador
-                // sin cartas) se va acá donde se determina el ganador y torna la variable de juego terminado true
-            } else {
-                ganador = setGanador(jugadores);
-                juegoTerminado = true;
-            }
-
-            //se toma el indice del jugador actual para poder meter las cartas en la siguiente iteracion
-            // en dado caso que el eligiera mentira
-            turnoJugadorVeredictoFinal = turnoActual;
-            turnoActual = (turnoActual + 1) % jugadores.size();
-        }
-
-        //Se imprime el ganador
-        estadoJuego.setText("Ha ganado " + ganador.getNombre() + ", se quedó sin cartas!!");
-        System.out.println("Ha ganado " + ganador.getNombre() + ", se quedó sin cartas!!");
 
     }
 
@@ -435,20 +270,62 @@ public class Juego {
 
     //AREA DE BOTONES
 
+    private void botonSiguienteTurno() {
+        turnoActual = (turnoActual + 1) % jugadores.size();
+
+        // Actualiza el estado del turno en la interfaz
+        turno.setText("Turno de jugador: " + (turnoActual + 1));
+        panelCartasSeleccionadas.removeAll();
+
+        switch (veredicto) {
+            case "Mentira":
+                estadoJuego.setText("El jugador ha metido las siguientes cartas decide si es mentira o verdad");
+                for (Carta carta : cartasEleccion.getBaraja()) {
+                    panelCartasSeleccionadas.add(carta.getImagenCarta());
+                }
+                break;
+            case "Verdad":
+                estadoJuego.setText("El jugador ha metido las siguientes cartas decide si es mentira o verdad");
+                for (Carta carta : cartasEleccion.getBaraja()) {
+                    panelCartasSeleccionadas.add(carta.getImagenCarta());
+                }
+                break;
+        }
+
+        panelCartasSeleccionadas.repaint();
+        panelCartasSeleccionadas.revalidate();
+
+        // Muestra la mano del jugador actual
+        mostrarMano(jugadores.get(turnoActual));
+
+        // Permite que el jugador seleccione cartas
+        cartasSeleccionables(jugadores.get(turnoActual));
+
+        // Reinicia el veredicto
+        veredicto = null; // Reinicia el veredicto para la siguiente ronda
+        desactivarMouseListener = true;
+    }
+
     private void botonMentira()
     {
-
+        veredicto = "Mentira";
+        desactivarMouseListener = false;
     }
 
     private void botonVerdad()
     {
-
+        veredicto = "Verdad";
+        desactivarMouseListener = false;
     }
 
     private void botonColocarPozo()
     {
+        Random rd = new Random();
+        listener = true;
+
 
     }
+
 
     /**
      * Método que es el botón para salir del juego
