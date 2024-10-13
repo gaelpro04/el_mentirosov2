@@ -278,64 +278,29 @@ public class Juego {
      */
     public Baraja sistemaEleccionCartas(Jugador jugador)
     {
-        //Se inicia con una baraja vacia que en este caso se meterán las cartas
-        //que se seleccionarán, además de una variable que nos servirá para elegir
-        //los indices de las cartas y un scanner para leer el indice que seleccione
-        //el jugador
-        int indiceEleccion = 0;
-        Baraja cartasEleccion = new Baraja();
-        Scanner respuesta = new Scanner(System.in);
-        int eleccion = 0;
+        Baraja cartaEleccion = new Baraja();
         panelCartasSeleccionadas.removeAll();
 
-        //El ciclo parará hasta halla 3 cartas en su contenido o a menos
-        //que el usuario ingrese -1 para parar el ciclo solo seleccionar
-        //menos de las tres cartas
-        while (cartasEleccion.getBaraja().size() != 3 && eleccion != -1) {
+        for (Carta carta : jugador.getMano()) {
+            JLabel cartaMouse = carta.getImagenCarta();
 
-            panelMano.removeAll();
-            System.out.println("Cartas de " + jugador.getNombre() + "\n");
-            for (Carta carta : jugador.getMano()) {
-                panelMano.add(carta.getImagenCarta());
-            }
-            jugador.mostrarMano();
+            cartaMouse.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
 
-            //Se imprime si ya hubo un ciclo anterior
-            System.out.println("\nCartas elegidas: \n");
-            if (!cartasEleccion.getBaraja().isEmpty()) {
-                cartasEleccion.mostrarEnConsola();
-            }
+                    if (cartaEleccion.getBaraja().size() < 3) {
+                        cartaEleccion.getBaraja().add(carta);
+                        panelCartasSeleccionadas.add(carta.getImagenCarta());
 
-            if (!cartasEleccion.getBaraja().isEmpty()) {
-                for (Carta carta : cartasEleccion.getBaraja()) {
-                    panelCartasSeleccionadas.add(carta.getImagenCarta());
+                        panelCartasSeleccionadas.revalidate();
+                        panelCartasSeleccionadas.repaint();
+
+                    } else {
+                        estadoJuego.setText("Has alcanzado el maximo");
+                    }
                 }
-            }
-
-            //Lectura de indice de la mano
-            estadoJuego.setText("Elija las cartas a meter al pozo (máximo 3)");
-            System.out.println("Elija las cartas a meter al pozo (máximo 3) o si ya quieres salir oprime \"-1\" \n");
-
-            eleccion = respuesta.nextInt();
-
-            //Como se mencionó al inicio del ciclo, si el jugador selecciona -1 quiere decir
-            //que quiere salir
-            if (eleccion == -1) {
-                break;
-            }
-
-            //Se saca la carta y se mete en la mano del jugador
-            cartasEleccion.getBaraja().add(jugador.getMano().remove(eleccion));
+            });
         }
-        panelCartasSeleccionadas.add(jugador.getMano().get(eleccion).getImagenCarta());
-
-        //Como la ultima impresión de la ultima carta seleccionada no se imprime
-        //se vuelve imprimir las cartas seleccionadas aquí
-        System.out.println("\nCartas elegidas: \n");
-        cartasEleccion.mostrarEnConsola();
-
-        //Se retorna las cartas para poder meterlas en otro método
-        return cartasEleccion;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
