@@ -84,7 +84,7 @@ public class Juego {
         panelMano = new JPanel();
         panelPozo = new JPanel(new BorderLayout());
         panelCartasSeleccionadas = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panelMano.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panelMano.setLayout(new FlowLayout(FlowLayout.CENTER));
         panelCartas.add(panelMano, BorderLayout.SOUTH);
         panelCartas.add(panelPozo, BorderLayout.CENTER);
         panelCartas.add(panelCartasSeleccionadas, BorderLayout.NORTH);
@@ -134,7 +134,7 @@ public class Juego {
 
 
         //Hacer el frame visible junto a modificaciones
-        frame.setSize(800, 700);
+        frame.setSize(1500, 900);
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
     }
@@ -313,8 +313,8 @@ public class Juego {
             }
 
             //Lectura de indice de la mano
-            estadoJuego.setText("Eliga las cartas a meter al pozo(máximo 3)");
-            System.out.println("Eliga las cartas a meter al pozo(máximo 3) o si ya quieres salir oprime \"-1\" \n");
+            estadoJuego.setText("Elija las cartas a meter al pozo (máximo 3)");
+            System.out.println("Elija las cartas a meter al pozo (máximo 3) o si ya quieres salir oprime \"-1\" \n");
 
             eleccion = respuesta.nextInt();
 
@@ -381,7 +381,7 @@ public class Juego {
 
             if (!finDelJuego(jugadores)) {
 
-                turno.setText("Turno del jugador " + jugadorActual.getNombre() + " |");
+                turno.setText("Turno del " + jugadorActual.getNombre() + " |");
 
 
                 //BanderaEscoger como se mencionó se usa una vez para ya poder acceder a la lectura
