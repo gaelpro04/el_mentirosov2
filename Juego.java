@@ -94,9 +94,9 @@ public class Juego {
         panelControlArribaDerecha = new JPanel();
 
         //Creaciones de botones
-        botonMentira = new JButton("Mentira");
-        botonVerdad = new JButton("Verdad");
-        botonColocarPozo = new JButton("Colocar Pozo");
+        botonMentira = new JButton(" Es Mentira");
+        botonVerdad = new JButton(" Es Verdad");
+        botonColocarPozo = new JButton("Colocar en Pozo");
         estadoJuego = new JLabel("Estado Juego");
         turno = new JLabel("Turno");
         mentiraOverdad = new JLabel("| Mentira o verdad");
