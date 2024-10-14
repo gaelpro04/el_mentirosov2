@@ -2,11 +2,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-public class Juego {
+public class Juego extends javax.swing.JFrame implements MouseListener {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -16,15 +17,11 @@ public class Juego {
     private ArrayList<Jugador> jugadores;
     private Mesa mesa;
     private Baraja baraja;
-    private boolean listener;
-    private String veredicto;
-    private String veredictoFinal;
-    private  boolean descubrir;
-    private Carta cartaOculta;
-    private Baraja cartasMentira;
-    private Baraja cartasEleccion;
-    private boolean desactivarMouseListener;
     private int turnoActual;
+    private Carta cartaOculta;;
+    private Baraja cartasEleccion;
+    private String veredicto;
+    private String VeredictoFinal;
 
     //Atributos para la interfaz de juego
     private JFrame frame;
@@ -48,7 +45,6 @@ public class Juego {
     private JButton botonMentira;
     private JButton botonVerdad;
     private JButton botonColocarPozo;
-    private  JButton botonSiguienteTurno;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -60,14 +56,9 @@ public class Juego {
 
         this.jugadores = new ArrayList<>(cantJugadores);
         this.mesa = new Mesa();
-        listener = true;
-        veredicto = null;
-        veredictoFinal = null;
-        descubrir = false;
         cartaOculta = new Carta("oros",1,false,"BarajaEspañola/CartaInversa.png");
         cartasEleccion = new Baraja();
         turnoActual = 0;
-        desactivarMouseListener = true;
 
         //El constructor por defecto se tiene que poner
         //48(que es la cantidad de cartas de una baraja española)
@@ -114,11 +105,14 @@ public class Juego {
         botonMentira = new JButton("Mentira");
         botonVerdad = new JButton("Verdad");
         botonColocarPozo = new JButton("Colocar en Pozo");
-        botonSiguienteTurno = new JButton("Siguiente turno");
-        botonSiguienteTurno.addActionListener(evento -> botonSiguienteTurno());
         botonMentira.addActionListener(evento -> botonMentira());
         botonVerdad.addActionListener(evento -> botonVerdad());
         botonColocarPozo.addActionListener(evento -> botonColocarPozo());
+        if (cartasEleccion.getBaraja().isEmpty()) {
+            botonMentira.setEnabled(false);
+            botonVerdad.setEnabled(false);
+            botonColocarPozo.setEnabled(false);
+        }
 
         estadoJuego = new JLabel("Estado Juego");
         turno = new JLabel("Turno");
@@ -137,7 +131,6 @@ public class Juego {
         panelControlArribaDerecha.add(mentiraOverdad, BorderLayout.EAST);
         panelControlArriba.add(panelControlArribaIzquierda, BorderLayout.WEST);
         panelControlArriba.add(panelControlArribaDerecha, BorderLayout.EAST);
-        panelControlAbajo.add(botonSiguienteTurno, BorderLayout.CENTER);
         panelControlAbajo.add(botonMentira, BorderLayout.CENTER);
         panelControlAbajo.add(botonVerdad, BorderLayout.CENTER);
         panelControlAbajo.add(botonColocarPozo, BorderLayout.CENTER);
@@ -187,6 +180,7 @@ public class Juego {
         //ciclo para asignar cartas por jugador
         for (Jugador jugador : jugadores) {
             for (int i = 0; i < cartasPorJugador; i++) {
+                baraja.getBaraja().getFirst().getImagenCarta().addMouseListener(this);
                 jugador.getMano().add(baraja.getBaraja().removeFirst());
             }
         }
@@ -195,59 +189,27 @@ public class Juego {
         //quede un residuo en la baraja esta se alamacenará en el cementerio del juego
         if (!baraja.getBaraja().isEmpty()) {
             for (int i = 0; i < baraja.getBaraja().size(); ++i) {
+                baraja.getBaraja().getFirst().getImagenCarta().addMouseListener(this);
                 mesa.getCementerio().getBaraja().add(baraja.getBaraja().removeFirst());
             }
         }
     }
 
-    private void cartasSeleccionables(Jugador jugador)
-    {
-        if (desactivarMouseListener) {
-            panelCartasSeleccionadas.removeAll();
-
-            for (Carta carta : jugador.getMano()) {
-                carta.getImagenCarta().addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-
-                        if (listener) {
-                            if (cartasEleccion.getBaraja().size() < 3) {
-                                panelCartasSeleccionadas.add(carta.getImagenCarta());
-                                cartasEleccion.getBaraja().add(carta);
-
-                                panelCartasSeleccionadas.repaint();
-                                panelCartasSeleccionadas.revalidate();
-                                jugador.getMano().remove(carta);
-
-
-                            } else {
-                                estadoJuego.setText("Has alcanzado el máximo de cartas");
-                            }
-                        } else {
-                            estadoJuego.setText("Debes colocar las cartas al pozo");
-                        }
-
-
-
-
-                    }
-                });
-            }
-        }
-
-
-
-
-    }
-
     private void mostrarMano(Jugador jugador)
     {
         panelMano.removeAll();
+        panelCartasSeleccionadas.removeAll();
         for (Carta carta : jugador.getMano()) {
             panelMano.add(carta.getImagenCarta());
         }
         panelMano.repaint();
         panelMano.revalidate();
+        estadoJuego.setText("Escoge máximo tres cartas");
+    }
+
+    private void seleccionCartas()
+    {
+
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -260,7 +222,6 @@ public class Juego {
         hacerFrame();
         turno.setText("Turno de jugador: " + (turnoActual+1));
         mostrarMano(jugadores.get(turnoActual));
-        cartasSeleccionables(jugadores.get(turnoActual));
 
 
 
@@ -270,59 +231,41 @@ public class Juego {
 
     //AREA DE BOTONES
 
-    private void botonSiguienteTurno() {
-        turnoActual = (turnoActual + 1) % jugadores.size();
-
-        // Actualiza el estado del turno en la interfaz
-        turno.setText("Turno de jugador: " + (turnoActual + 1));
-        panelCartasSeleccionadas.removeAll();
-
-        switch (veredicto) {
-            case "Mentira":
-                estadoJuego.setText("El jugador ha metido las siguientes cartas decide si es mentira o verdad");
-                for (Carta carta : cartasEleccion.getBaraja()) {
-                    panelCartasSeleccionadas.add(carta.getImagenCarta());
-                }
-                break;
-            case "Verdad":
-                estadoJuego.setText("El jugador ha metido las siguientes cartas decide si es mentira o verdad");
-                for (Carta carta : cartasEleccion.getBaraja()) {
-                    panelCartasSeleccionadas.add(carta.getImagenCarta());
-                }
-                break;
-        }
-
-        panelCartasSeleccionadas.repaint();
-        panelCartasSeleccionadas.revalidate();
-
-        // Muestra la mano del jugador actual
-        mostrarMano(jugadores.get(turnoActual));
-
-        // Permite que el jugador seleccione cartas
-        cartasSeleccionables(jugadores.get(turnoActual));
-
-        // Reinicia el veredicto
-        veredicto = null; // Reinicia el veredicto para la siguiente ronda
-        desactivarMouseListener = true;
-    }
-
     private void botonMentira()
     {
+        botonVerdad.setEnabled(false);
+        botonMentira.setEnabled(false);
         veredicto = "Mentira";
-        desactivarMouseListener = false;
     }
 
     private void botonVerdad()
     {
+        botonVerdad.setEnabled(false);
+        botonMentira.setEnabled(false);
         veredicto = "Verdad";
-        desactivarMouseListener = false;
     }
 
     private void botonColocarPozo()
     {
-        Random rd = new Random();
-        listener = true;
+        botonColocarPozo.setEnabled(false);
 
+        if (!cartasEleccion.getBaraja().isEmpty()) {
+            for (int i = 0; i < cartasEleccion.getBaraja().size(); ++i) {
+                mesa.getPozo().getBaraja().add(cartasEleccion.getBaraja().getFirst());
+            }
+        }
+
+        if (!mesa.getPozo().getBaraja().isEmpty()) {
+            panelPozo.add(cartaOculta.getImagenCarta());
+            panelPozo.repaint();
+            panelPozo.revalidate();
+        }
+
+        turnoActual = (turnoActual + 1) % jugadores.size();
+        turno.setText("Turno de jugador: " + (turnoActual+1));
+        mostrarMano(jugadores.get(turnoActual));
+
+        cartasEleccion = new Baraja();
 
     }
 
@@ -335,4 +278,55 @@ public class Juego {
         System.exit(0);
     }
 
+    @Override
+    public void mouseClicked(MouseEvent e)
+    {
+        ArrayList<Carta> cartasEliminar = new ArrayList<>();
+
+        for (Carta carta : jugadores.get(turnoActual).getMano()) {
+
+            if (e.getSource() == carta.getImagenCarta()) {
+
+                botonMentira.setEnabled(true);
+                botonVerdad.setEnabled(true);
+                botonColocarPozo.setEnabled(true);
+
+                if (cartasEleccion.getBaraja().size() < 3) {
+                    cartasEliminar.add(carta);
+                    cartasEleccion.getBaraja().add(carta);
+                    panelCartasSeleccionadas.add(carta.getImagenCarta());
+
+                    panelCartasSeleccionadas.repaint();
+                    panelCartasSeleccionadas.revalidate();
+                } else {
+                    estadoJuego.setText("Has alcanzado el máximo de cartas");
+                }
+
+            }
+        }
+
+        for (Carta carta : cartasEliminar) {
+            jugadores.get(turnoActual).getMano().remove(carta);
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
 }
