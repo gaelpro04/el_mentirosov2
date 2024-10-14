@@ -20,7 +20,6 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
     private int turnoActual;
     private Carta cartaOculta;;
     private Baraja cartasEleccion;
-    private String veredicto;
     private String VeredictoFinal;
 
     //Atributos para la interfaz de juego
@@ -221,33 +220,44 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
     /**
      * Método de juego, es decir donde ya se juega
      */
-    public void jugar()
-    {
-        hacerFrame();
-        turno.setText("Turno de jugador: " + (turnoActual+1));
-        mostrarMano(jugadores.get(turnoActual));
-
-
-
+    //Esto asegura que la creación de la interfaz gráfica ocurra en el hilo adecuado.
+    public void jugar() {
+        SwingUtilities.invokeLater(() -> {
+            hacerFrame();
+            turno.setText("Turno de jugador: " + (turnoActual + 1));
+            mostrarMano(jugadores.get(turnoActual));
+        });
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //AREA DE BOTONES
 
-    private void botonMentira()
-    {
-        botonVerdad.setEnabled(false);
-        botonMentira.setEnabled(false);
-        veredicto = "Mentira";
+    //Definición del enum Veredicto
+    public enum Veredicto {
+        MENTIRA, VERDAD
     }
 
-    private void botonVerdad()
-    {
+    //Cambiar el atributo veredicto a tipo Veredicto
+    private Veredicto veredicto;
+
+    //Modificación del método auxiliar para usar el enum
+    private void procesarVeredicto(Veredicto veredicto) {
         botonVerdad.setEnabled(false);
         botonMentira.setEnabled(false);
-        veredicto = "Verdad";
+        //Almacena el veredicto usando el enum
+        this.veredicto = veredicto;
     }
+
+    // Métodos que llaman al auxiliar con el enum
+    private void botonMentira() {
+        procesarVeredicto(Veredicto.MENTIRA);
+    }
+
+    private void botonVerdad() {
+        procesarVeredicto(Veredicto.VERDAD);
+    }
+
 
     private void botonColocarPozo()
     {
@@ -288,15 +298,15 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
         System.out.println("Saúl Iván Ramírez Heraldez");
     }
 
+    //En lugar de crear una nueva lista de cartasEliminar en cada clic, puedes crearla una sola vez y vaciarla cada vez que la necesites.
+    private final ArrayList<Carta> cartasEliminar = new ArrayList<>();
+
     @Override
-    public void mouseClicked(MouseEvent e)
-    {
-        ArrayList<Carta> cartasEliminar = new ArrayList<>();
+    public void mouseClicked(MouseEvent e) {
+        cartasEliminar.clear();  // Vaciar la lista antes de cada uso
 
         for (Carta carta : jugadores.get(turnoActual).getMano()) {
-
             if (e.getSource() == carta.getImagenCarta()) {
-
                 botonMentira.setEnabled(true);
                 botonVerdad.setEnabled(true);
                 botonColocarPozo.setEnabled(true);
@@ -311,7 +321,6 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
                 } else {
                     estadoJuego.setText("Has alcanzado el máximo de cartas");
                 }
-
             }
         }
 
