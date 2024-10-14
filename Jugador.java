@@ -41,18 +41,22 @@ public class Jugador {
         return mano.getBaraja();
     }
 
+    //Devolvemos la cantidad de cartas restantes
     public int getCartasRestantes() {
         return cartasRestantes;
     }
 
+    //Establecemos las cartas del jugador
     public void setCartasRestantes(int cartasRestantes) {
         this.cartasRestantes = cartasRestantes;
     }
 
+    //Llamamos la puntuacion del jugador
     public int getPuntuacion() {
         return puntuacion;
     }
 
+    //Actualizamos la puntuacion del jugador
     public void setPuntuacion(int puntuacion) {
         this.puntuacion = puntuacion;
     }
@@ -72,6 +76,7 @@ public class Jugador {
      * del jugador, este método se apoya con el método de monstrarEnConsola()
      * de Baraja
      */
+    //Mostramos la mano del jugador en consola
     public void mostrarMano()
     {
         mano.mostrarEnConsola();

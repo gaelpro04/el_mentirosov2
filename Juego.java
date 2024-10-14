@@ -37,6 +37,7 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
     private JMenuBar menuBar;
     private JMenu menuAyuda;
     private JMenuItem itemSalir;
+    private JMenuItem itemCreditos;
 
     private JLabel estadoJuego;
     private JLabel turno;
@@ -139,10 +140,13 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
         menuBar = new JMenuBar();
         menuAyuda = new JMenu("Ayuda");
         itemSalir = new JMenuItem("Salir");
+        itemCreditos = new JMenuItem("Créditos");
         itemSalir.addActionListener(evento -> botonSalir());
+        itemCreditos.addActionListener(evento -> mostrarCreditos());
 
         //Almacén de items, menús en la barra menú y añadir paneles a frame
         menuAyuda.add(itemSalir);
+        menuAyuda.add(itemCreditos);
         menuBar.add(menuAyuda);
         frame.setJMenuBar(menuBar);
         frame.add(panelCartas);
@@ -276,6 +280,12 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
     private void botonSalir()
     {
         System.exit(0);
+    }
+
+    private void mostrarCreditos() {
+        System.out.println("\nHecho por: ");
+        System.out.println("Gael Jovani López García");
+        System.out.println("Saúl Iván Ramírez Heraldez");
     }
 
     @Override
