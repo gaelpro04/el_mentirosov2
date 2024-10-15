@@ -41,6 +41,11 @@ public class Jugador {
         return mano.getBaraja();
     }
 
+    public Baraja getBarajaMano()
+    {
+        return mano;
+    }
+
     //Devolvemos la cantidad de cartas restantes
     public int getCartasRestantes() {
         return cartasRestantes;

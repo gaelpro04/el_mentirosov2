@@ -20,7 +20,7 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
     private int turnoActual;
     private Carta cartaOculta;;
     private Baraja cartasEleccion;
-    private String VeredictoFinal;
+    private boolean veredictoFinal;
 
     //Atributos para la interfaz de juego
     private JFrame frame;
@@ -59,6 +59,7 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
         cartaOculta = new Carta("oros",1,false,"BarajaEspañola/CartaInversa.png");
         cartasEleccion = new Baraja();
         turnoActual = 0;
+        veredictoFinal = false;
 
         //El constructor por defecto se tiene que poner
         //48(que es la cantidad de cartas de una baraja española)
@@ -198,6 +199,26 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
         }
     }
 
+    private boolean esFinDelJuego()
+    {
+        for (Jugador jugador : jugadores) {
+            if (jugador.getMano().isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Jugador determinarGanador()
+    {
+        for (Jugador jugador : jugadores) {
+            if (jugador.getMano().isEmpty()) {
+                return jugador;
+            }
+        }
+        return null;
+    }
+
     private void mostrarMano(Jugador jugador)
     {
         panelMano.removeAll();
@@ -210,9 +231,24 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
         estadoJuego.setText("Escoge máximo tres cartas");
     }
 
-    private void seleccionCartas()
+    private void cartasPanelCartasSeleccionadas()
     {
+        panelCartasSeleccionadas.removeAll();
 
+        if (veredicto == Veredicto.MENTIRA && jugadores.get((turnoActual - 1 + jugadores.size()) % jugadores.size()).getMano().size() < 4) {
+
+            ArrayList<Carta> manoClon = new ArrayList<>(jugadores.get((turnoActual - 1 + jugadores.size()) % jugadores.size()).getMano());
+            Collections.shuffle(manoClon);
+
+            for (int i = 0; i < cartasEleccion.getBaraja().size(); ++i) {
+                panelCartasSeleccionadas.add(manoClon.removeFirst().getImagenCarta());
+            }
+
+        } else {
+            for (int i = 0; i < cartasEleccion.getBaraja().size(); ++i) {
+                panelCartasSeleccionadas.add(cartasEleccion.getBaraja().get(i).getImagenCarta());
+            }
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -235,7 +271,7 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
 
     //Definición del enum Veredicto
     public enum Veredicto {
-        MENTIRA, VERDAD
+        MENTIRA, VERDAD, NEUTRO
     }
 
     //Cambiar el atributo veredicto a tipo Veredicto
@@ -251,21 +287,105 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
 
     // Métodos que llaman al auxiliar con el enum
     private void botonMentira() {
-        procesarVeredicto(Veredicto.MENTIRA);
+
+        botonVerdad.setEnabled(false);
+        botonMentira.setEnabled(false);
+
+        if (veredictoFinal) {
+            int turnoAnterior = (turnoActual - 1 + jugadores.size()) % jugadores.size();
+            panelMano.setVisible(true);
+            panelMano.setEnabled(true);
+
+            if (veredicto == Veredicto.MENTIRA) {
+                mentiraOverdad.setText("El jugador anterior ha mentirado, acertaste!!!");
+                estadoJuego.setText("el jugador anterior obtendrá toda las cartas del pozo");
+
+                for (int i = 0; i < mesa.getPozo().getBaraja().size(); ++i) {
+
+                    jugadores.get(turnoAnterior).getMano().add(mesa.getPozo().getBaraja().removeFirst());
+                }
+                jugadores.get(turnoAnterior).getMano().add(mesa.getPozo().getBaraja().removeFirst());
+
+                panelMano.removeAll();
+                mesa.getPozo().getBaraja().clear();
+
+            } else {
+                mentiraOverdad.setText("El jugador anterior ha verdado, no has acertado!!!");
+                estadoJuego.setText("el jugador actual obtendrá toda las cartas del pozo");
+
+                for (int i = 0; i < mesa.getPozo().getBaraja().size(); ++i) {
+
+                    jugadores.get(turnoActual).getMano().add(mesa.getPozo().getBaraja().removeFirst());
+                }
+                jugadores.get(turnoActual).getMano().add(mesa.getPozo().getBaraja().removeFirst());
+
+                panelMano.removeAll();
+                mesa.getPozo().getBaraja().clear();
+            }
+
+            panelPozo.removeAll();
+
+            veredictoFinal = false;
+            mostrarMano(jugadores.get(turnoActual));
+            veredicto = null;
+
+        } else {
+            botonColocarPozo.setEnabled(true);
+            procesarVeredicto(Veredicto.MENTIRA);
+        }
+
     }
 
     private void botonVerdad() {
-        procesarVeredicto(Veredicto.VERDAD);
+
+        botonVerdad.setEnabled(false);
+        botonMentira.setEnabled(false);
+
+        if (veredictoFinal) {
+            panelMano.setVisible(true);
+            panelMano.setEnabled(true);
+            panelMano.removeAll();
+            mostrarMano(jugadores.get(turnoActual));
+
+            veredictoFinal = false;
+            veredicto = null;
+        } else {
+            procesarVeredicto(Veredicto.VERDAD);
+            botonColocarPozo.setEnabled(true);
+        }
+
     }
 
 
     private void botonColocarPozo()
     {
+        if (esFinDelJuego()) {
+            panelControlArriba.removeAll();
+            JLabel mensajeFinal = new JLabel("EL " + determinarGanador().getNombre() + " HA GANADO EL JUEGO!!!");
+            panelControlArriba.add(mensajeFinal, BorderLayout.CENTER);
+            panelMano.removeAll();
+            panelPozo.removeAll();
+            panelCartasSeleccionadas.removeAll();
+
+            botonColocarPozo.setEnabled(false);
+            botonVerdad.setEnabled(false);
+            botonMentira.setEnabled(false);
+            panelControlAbajo.setVisible(false);
+
+            JButton botonFinal = new JButton("Salir");
+            botonFinal.addActionListener(e -> botonSalir());
+            panelControlArriba.add(botonFinal, BorderLayout.EAST);
+        }
         botonColocarPozo.setEnabled(false);
+        botonMentira.setEnabled(true);
+        botonVerdad.setEnabled(true);
+        panelMano.setVisible(false);
+        veredictoFinal = true;
+        mentiraOverdad.setText("Veredicto aun por determinar...");
 
         if (!cartasEleccion.getBaraja().isEmpty()) {
             for (int i = 0; i < cartasEleccion.getBaraja().size(); ++i) {
-                mesa.getPozo().getBaraja().add(cartasEleccion.getBaraja().getFirst());
+                mesa.getPozo().getBaraja().add(cartasEleccion.getBaraja().get(i));
             }
         }
 
@@ -278,6 +398,12 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
         turnoActual = (turnoActual + 1) % jugadores.size();
         turno.setText("Turno de jugador: " + (turnoActual+1));
         mostrarMano(jugadores.get(turnoActual));
+
+        estadoJuego.setText("Elige si es verdad o mentira las cartas ingresadas");
+        cartasPanelCartasSeleccionadas();
+        panelMano.setEnabled(false);
+
+
 
         cartasEleccion = new Baraja();
 
@@ -305,28 +431,36 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
     public void mouseClicked(MouseEvent e) {
         cartasEliminar.clear();  // Vaciar la lista antes de cada uso
 
-        for (Carta carta : jugadores.get(turnoActual).getMano()) {
-            if (e.getSource() == carta.getImagenCarta()) {
-                botonMentira.setEnabled(true);
-                botonVerdad.setEnabled(true);
-                botonColocarPozo.setEnabled(true);
+        if (!veredictoFinal) {
+            for (Carta carta : jugadores.get(turnoActual).getMano()) {
+                if (e.getSource() == carta.getImagenCarta()) {
+                    if (veredicto == Veredicto.MENTIRA || veredicto == Veredicto.VERDAD) {
+                        botonColocarPozo.setEnabled(true);
+                    }
+                    botonMentira.setEnabled(true);
+                    botonVerdad.setEnabled(true);
 
-                if (cartasEleccion.getBaraja().size() < 3) {
-                    cartasEliminar.add(carta);
-                    cartasEleccion.getBaraja().add(carta);
-                    panelCartasSeleccionadas.add(carta.getImagenCarta());
 
-                    panelCartasSeleccionadas.repaint();
-                    panelCartasSeleccionadas.revalidate();
-                } else {
-                    estadoJuego.setText("Has alcanzado el máximo de cartas");
+                    if (cartasEleccion.getBaraja().size() < 3) {
+                        cartasEliminar.add(carta);
+                        cartasEleccion.getBaraja().add(carta);
+                        panelCartasSeleccionadas.add(carta.getImagenCarta());
+
+                        panelCartasSeleccionadas.repaint();
+                        panelCartasSeleccionadas.revalidate();
+                    } else {
+                        estadoJuego.setText("Has alcanzado el máximo de cartas");
+                    }
                 }
+            }
+
+            for (Carta carta : cartasEliminar) {
+                jugadores.get(turnoActual).getMano().remove(carta);
             }
         }
 
-        for (Carta carta : cartasEliminar) {
-            jugadores.get(turnoActual).getMano().remove(carta);
-        }
+
+
     }
 
     @Override
