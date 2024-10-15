@@ -293,7 +293,6 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
 
         if (veredictoFinal) {
             int turnoAnterior = (turnoActual - 1 + jugadores.size()) % jugadores.size();
-            panelMano.setVisible(true);
             panelMano.setEnabled(true);
 
             if (veredicto == Veredicto.MENTIRA) {
@@ -342,7 +341,6 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
         botonMentira.setEnabled(false);
 
         if (veredictoFinal) {
-            panelMano.setVisible(true);
             panelMano.setEnabled(true);
             panelMano.removeAll();
             mostrarMano(jugadores.get(turnoActual));
@@ -379,7 +377,6 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
         botonColocarPozo.setEnabled(false);
         botonMentira.setEnabled(true);
         botonVerdad.setEnabled(true);
-        panelMano.setVisible(false);
         veredictoFinal = true;
         mentiraOverdad.setText("Veredicto aun por determinar...");
 
