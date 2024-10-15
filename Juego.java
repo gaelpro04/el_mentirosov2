@@ -45,6 +45,7 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
     private JButton botonMentira;
     private JButton botonVerdad;
     private JButton botonColocarPozo;
+    private JButton botonDesocultar;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -106,6 +107,8 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
         botonMentira = new JButton("Mentira");
         botonVerdad = new JButton("Verdad");
         botonColocarPozo = new JButton("Colocar en Pozo");
+        botonDesocultar = new JButton("Desocultar");
+        botonDesocultar.addActionListener(evento -> botonDesocultar());
         botonMentira.addActionListener(evento -> botonMentira());
         botonVerdad.addActionListener(evento -> botonVerdad());
         botonColocarPozo.addActionListener(evento -> botonColocarPozo());
@@ -113,6 +116,7 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
             botonMentira.setEnabled(false);
             botonVerdad.setEnabled(false);
             botonColocarPozo.setEnabled(false);
+            botonDesocultar.setEnabled(false);
         }
 
         estadoJuego = new JLabel("Estado Juego");
@@ -128,6 +132,7 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
         panelControlArribaIzquierda.setLayout(new FlowLayout());
         panelControlArribaDerecha.setLayout(new FlowLayout());
         panelControlArribaIzquierda.add(turno, BorderLayout.WEST);
+        panelControlAbajo.add(botonDesocultar, BorderLayout.EAST);
         panelControlArribaDerecha.add(estadoJuego, BorderLayout.EAST);
         panelControlArribaDerecha.add(mentiraOverdad, BorderLayout.EAST);
         panelControlArriba.add(panelControlArribaIzquierda, BorderLayout.WEST);
@@ -222,27 +227,37 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
     private void mostrarMano(Jugador jugador)
     {
         panelMano.removeAll();
-        panelCartasSeleccionadas.removeAll();
         for (Carta carta : jugador.getMano()) {
             panelMano.add(carta.getImagenCarta());
         }
+
         panelMano.repaint();
         panelMano.revalidate();
-        estadoJuego.setText("Escoge máximo tres cartas");
+
     }
 
     private void cartasPanelCartasSeleccionadas()
     {
         panelCartasSeleccionadas.removeAll();
 
-        if (veredicto == Veredicto.MENTIRA && jugadores.get((turnoActual - 1 + jugadores.size()) % jugadores.size()).getMano().size() < 4) {
+        if (veredicto == Veredicto.MENTIRA) {
 
-            ArrayList<Carta> manoClon = new ArrayList<>(jugadores.get((turnoActual - 1 + jugadores.size()) % jugadores.size()).getMano());
-            Collections.shuffle(manoClon);
+            if (jugadores.get((turnoActual - 1 + jugadores.size()) % jugadores.size()).getMano().size() < 4) {
+                Baraja baraja = new Baraja(40);
+                Collections.shuffle(baraja.getBaraja());
 
-            for (int i = 0; i < cartasEleccion.getBaraja().size(); ++i) {
-                panelCartasSeleccionadas.add(manoClon.removeFirst().getImagenCarta());
+                for (int i = 0; i < cartasEleccion.getBaraja().size(); ++i) {
+                    panelCartasSeleccionadas.add(baraja.getBaraja().get(i).getImagenCarta());
+                }
+            } else {
+                ArrayList<Carta> manoClon = new ArrayList<>(jugadores.get((turnoActual - 1 + jugadores.size()) % jugadores.size()).getMano());
+                Collections.shuffle(manoClon);
+
+                for (int i = 0; i < cartasEleccion.getBaraja().size(); ++i) {
+                    panelCartasSeleccionadas.add(manoClon.removeFirst().getImagenCarta());
+                }
             }
+
 
         } else {
             for (int i = 0; i < cartasEleccion.getBaraja().size(); ++i) {
@@ -326,6 +341,8 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
 
             veredictoFinal = false;
             mostrarMano(jugadores.get(turnoActual));
+            panelCartasSeleccionadas.removeAll();
+            estadoJuego.setText("Escoge máximo tres cartas");
             veredicto = null;
 
         } else {
@@ -344,6 +361,8 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
             panelMano.setEnabled(true);
             panelMano.removeAll();
             mostrarMano(jugadores.get(turnoActual));
+            panelCartasSeleccionadas.removeAll();
+            estadoJuego.setText("Escoge máximo tres cartas");
 
             veredictoFinal = false;
             veredicto = null;
@@ -352,6 +371,14 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
             botonColocarPozo.setEnabled(true);
         }
 
+    }
+
+    private void botonDesocultar()
+    {
+        botonDesocultar.setEnabled(false);
+        botonMentira.setEnabled(true);
+        botonVerdad.setEnabled(true);
+        mostrarMano(jugadores.get(turnoActual));
     }
 
 
@@ -375,8 +402,9 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
             panelControlArriba.add(botonFinal, BorderLayout.EAST);
         }
         botonColocarPozo.setEnabled(false);
-        botonMentira.setEnabled(true);
-        botonVerdad.setEnabled(true);
+        botonMentira.setEnabled(false);
+        botonVerdad.setEnabled(false);
+        botonDesocultar.setEnabled(true);
         veredictoFinal = true;
         mentiraOverdad.setText("Veredicto aun por determinar...");
 
@@ -394,13 +422,18 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
 
         turnoActual = (turnoActual + 1) % jugadores.size();
         turno.setText("Turno de jugador: " + (turnoActual+1));
-        mostrarMano(jugadores.get(turnoActual));
+
+        panelMano.removeAll();
+        for (Carta carta : jugadores.get(turnoActual).getMano()) {
+            panelMano.add(carta.getImagenOculta());
+        }
+        panelMano.repaint();
+        panelMano.revalidate();
+
 
         estadoJuego.setText("Elige si es verdad o mentira las cartas ingresadas");
         cartasPanelCartasSeleccionadas();
         panelMano.setEnabled(false);
-
-
 
         cartasEleccion = new Baraja();
 

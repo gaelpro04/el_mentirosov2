@@ -148,5 +148,12 @@ public class Carta {
         }
         return imagenOculta;
     }
+
+    public JLabel getImagenOculta()
+    {
+        return imagenOculta;
+    }
+
+
 }
 
