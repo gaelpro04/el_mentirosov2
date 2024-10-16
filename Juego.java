@@ -257,44 +257,55 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
         return null;
     }
 
-    private void mostrarMano(Jugador jugador)
-    {
+    private void mostrarMano(Jugador jugador) {
+        // Elimina todos los componentes del panel donde se muestran las cartas de la mano del jugador
         panelMano.removeAll();
-        for (Carta carta : jugador.getMano()) {
-            panelMano.add(carta.getImagenCarta());
-        }
-        cartasFaltantes.setText("| " + (jugador.getMano().size()));
-        panelMano.repaint();
-        panelMano.revalidate();
 
+        // Itera sobre las cartas en la mano del jugador y añade la imagen de cada carta al panel
+        for (Carta carta : jugador.getMano()) {
+            panelMano.add(carta.getImagenCarta()); // Añade la representación gráfica de la carta al panel
+        }
+
+        // Actualiza el texto que muestra cuántas cartas le quedan al jugador
+        cartasFaltantes.setText("| " + (jugador.getMano().size()));
+
+        // Fuerza el repintado del panel para que los cambios en la visualización sean visibles
+        panelMano.repaint();
+
+        // Revalida el layout del panel para asegurar que se actualice correctamente tras los cambios
+        panelMano.revalidate();
     }
 
-    private void cartasPanelCartasSeleccionadas()
-    {
+    private void cartasPanelCartasSeleccionadas() {
+        // Elimina todas las cartas previamente mostradas en el panel de cartas seleccionadas
         panelCartasSeleccionadas.removeAll();
 
+        // Verifica si el veredicto actual es "MENTIRA"
         if (veredicto == Veredicto.MENTIRA) {
-
+            // Obtiene el jugador anterior al jugador actual (en función del turno) y verifica si su mano tiene menos de 4 cartas
             if (jugadores.get((turnoActual - 1 + jugadores.size()) % jugadores.size()).getMano().size() < 4) {
+                // Si la mano del jugador tiene menos de 4 cartas, se crea una nueva baraja de 40 cartas
                 Baraja baraja = new Baraja(40);
-                Collections.shuffle(baraja.getBaraja());
+                Collections.shuffle(baraja.getBaraja()); // Se mezclan las cartas de la baraja aleatoriamente
 
+                // Itera sobre las cartas de la baraja mezclada, añadiendo su imagen al panel de cartas seleccionadas
                 for (int i = 0; i < cartasEleccion.getBaraja().size(); ++i) {
-                    panelCartasSeleccionadas.add(baraja.getBaraja().get(i).getImagenCarta());
+                    panelCartasSeleccionadas.add(baraja.getBaraja().get(i).getImagenCarta()); // Añade la imagen de la carta al panel
                 }
             } else {
+                // Si el jugador tiene 4 o más cartas en su mano, se crea una copia (clon) de la mano del jugador
                 ArrayList<Carta> manoClon = new ArrayList<>(jugadores.get((turnoActual - 1 + jugadores.size()) % jugadores.size()).getMano());
-                Collections.shuffle(manoClon);
+                Collections.shuffle(manoClon); // Mezcla la copia de la mano del jugador aleatoriamente
 
+                // Itera sobre las cartas seleccionadas y añade una carta de la mano clonada (mezclada) al panel
                 for (int i = 0; i < cartasEleccion.getBaraja().size(); ++i) {
-                    panelCartasSeleccionadas.add(manoClon.removeFirst().getImagenCarta());
+                    panelCartasSeleccionadas.add(manoClon.remove(0).getImagenCarta()); // Añade la imagen de la carta y elimina la primera carta clonada
                 }
             }
-
-
         } else {
+            // Si el veredicto no es "MENTIRA", simplemente añade las cartas actuales de "cartasEleccion" al panel
             for (int i = 0; i < cartasEleccion.getBaraja().size(); ++i) {
-                panelCartasSeleccionadas.add(cartasEleccion.getBaraja().get(i).getImagenCarta());
+                panelCartasSeleccionadas.add(cartasEleccion.getBaraja().get(i).getImagenCarta()); // Añade la imagen de la carta al panel
             }
         }
     }
@@ -336,134 +347,198 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
     // Métodos que llaman al auxiliar con el enum
     private void botonMentira() {
 
+        // Desactiva los botones de verdad y mentira
         botonVerdad.setEnabled(false);
         botonMentira.setEnabled(false);
 
+        // Si el veredicto final ya se ha decidido
         if (veredictoFinal) {
+            // Calcula el turno anterior al jugador actual
             int turnoAnterior = (turnoActual - 1 + jugadores.size()) % jugadores.size();
+
+            // Habilita el panel de la mano para el jugador
             panelMano.setEnabled(true);
 
+            // Si el veredicto es "MENTIRA"
             if (veredicto == Veredicto.MENTIRA) {
-                mentiraOverdad.setText("El jugador anterior ha mentirado, acertaste!!!");
-                estadoJuego.setText("el jugador anterior obtendrá toda las cartas del pozo");
+                // Mensaje indicando que el jugador anterior mintió y el actual acertó
+                mentiraOverdad.setText("El jugador anterior ha mentido, ¡acertaste!");
+                estadoJuego.setText("El jugador anterior obtendrá todas las cartas del pozo.");
 
+                // Mueve todas las cartas del pozo a la mano del jugador anterior
                 for (int i = 0; i < mesa.getPozo().getBaraja().size(); ++i) {
-
                     jugadores.get(turnoAnterior).getMano().add(mesa.getPozo().getBaraja().removeFirst());
                 }
                 jugadores.get(turnoAnterior).getMano().add(mesa.getPozo().getBaraja().removeFirst());
 
+                // Limpia y actualiza la visualización de la mano
                 panelMano.removeAll();
                 panelMano.repaint();
                 panelMano.revalidate();
+
+                // Limpia el pozo
                 mesa.getPozo().getBaraja().clear();
 
             } else {
-                mentiraOverdad.setText("El jugador anterior ha verdado, no has acertado!!!");
-                estadoJuego.setText("el jugador actual obtendrá toda las cartas del pozo");
+                // Si el veredicto es "VERDAD"
+                mentiraOverdad.setText("El jugador anterior ha dicho la verdad, ¡no acertaste!");
+                estadoJuego.setText("El jugador actual obtendrá todas las cartas del pozo.");
 
+                // Mueve todas las cartas del pozo a la mano del jugador actual
                 for (int i = 0; i < mesa.getPozo().getBaraja().size(); ++i) {
-
                     jugadores.get(turnoActual).getMano().add(mesa.getPozo().getBaraja().removeFirst());
                 }
                 jugadores.get(turnoActual).getMano().add(mesa.getPozo().getBaraja().removeFirst());
 
+                // Limpia y actualiza la visualización de la mano
                 panelMano.removeAll();
                 panelMano.repaint();
                 panelMano.revalidate();
+
+                // Limpia el pozo
                 mesa.getPozo().getBaraja().clear();
             }
 
+            // Limpia el panel del pozo (visualmente)
             panelPozo.removeAll();
 
+            // Reinicia el estado del juego para el siguiente turno
             veredictoFinal = false;
+
+            // Muestra la mano del jugador actual
             mostrarMano(jugadores.get(turnoActual));
+
+            // Limpia el panel de cartas seleccionadas
             panelCartasSeleccionadas.removeAll();
+
+            // Actualiza el estado del juego
             estadoJuego.setText("Escoge máximo tres cartas");
+
+            // Resetea el veredicto
             veredicto = null;
 
         } else {
+            // Si no se ha llegado al veredicto final, habilita el botón para colocar en el pozo
             botonColocarPozo.setEnabled(true);
+
+            // Procesa el veredicto como "MENTIRA"
             procesarVeredicto(Veredicto.MENTIRA);
         }
-
     }
 
     private void botonVerdad() {
 
+        // Desactiva los botones de verdad y mentira
         botonVerdad.setEnabled(false);
         botonMentira.setEnabled(false);
 
+        // Si ya se ha decidido el veredicto final
         if (veredictoFinal) {
+            // Habilita el panel de la mano para el jugador
             panelMano.setEnabled(true);
+
+            // Limpia el panel de la mano del jugador actual
             panelMano.removeAll();
             panelMano.repaint();
             panelMano.revalidate();
+
+            // Muestra la mano del jugador actual en el panel
             mostrarMano(jugadores.get(turnoActual));
+
+            // Limpia el panel de cartas seleccionadas
             panelCartasSeleccionadas.removeAll();
+
+            // Actualiza el estado del juego, solicitando al jugador que escoja hasta tres cartas
             estadoJuego.setText("Escoge máximo tres cartas");
 
+            // Resetea el estado del veredicto final y el veredicto general
             veredictoFinal = false;
             veredicto = null;
+
         } else {
+            // Si aún no se ha decidido el veredicto final, procesa el veredicto como "VERDAD"
             procesarVeredicto(Veredicto.VERDAD);
+
+            // Habilita el botón para colocar cartas en el pozo
             botonColocarPozo.setEnabled(true);
         }
-
     }
 
-    private void botonDesocultar()
-    {
+    private void botonDesocultar() {
+        // Desactiva el botón de desocultar para evitar múltiples pulsaciones
         botonDesocultar.setEnabled(false);
+
+        // Habilita los botones de mentira y verdad para permitir al jugador hacer una elección
         botonMentira.setEnabled(true);
         botonVerdad.setEnabled(true);
+
+        // Muestra la mano del jugador actual en la interfaz
         mostrarMano(jugadores.get(turnoActual));
     }
 
-    private void botonColocarPozo()
-    {
+    private void botonColocarPozo() {
+        // Verifica si el juego ha llegado a su fin
         if (esFinDelJuego()) {
+            // Limpia el panel de control superior
             panelControlArriba.removeAll();
+
+            // Crea un mensaje que indica quién ha ganado el juego
             JLabel mensajeFinal = new JLabel("EL " + determinarGanador().getNombre() + " HA GANADO EL JUEGO!!!");
             panelControlArriba.add(mensajeFinal, BorderLayout.CENTER);
+
+            // Limpia el panel de la mano del jugador
             panelMano.removeAll();
             panelMano.repaint();
             panelMano.revalidate();
+
+            // Limpia el pozo y el panel de cartas seleccionadas
             panelPozo.removeAll();
             panelCartasSeleccionadas.removeAll();
 
+            // Desactiva los botones de colocar en el pozo, verdad y mentira
             botonColocarPozo.setEnabled(false);
             botonVerdad.setEnabled(false);
             botonMentira.setEnabled(false);
             panelControlAbajo.setVisible(false);
 
+            // Crea un botón de salir que finaliza el juego
             JButton botonFinal = new JButton("Salir");
             botonFinal.addActionListener(e -> botonSalir());
             panelControlArriba.add(botonFinal, BorderLayout.EAST);
         }
+
+        // Desactiva los botones de colocar en el pozo, verdad y mentira
         botonColocarPozo.setEnabled(false);
         botonMentira.setEnabled(false);
         botonVerdad.setEnabled(false);
-        botonDesocultar.setEnabled(true);
-        veredictoFinal = true;
-        mentiraOverdad.setText("Veredicto aun por determinar...");
 
+        // Habilita el botón de desocultar
+        botonDesocultar.setEnabled(true);
+
+        // Marca que el veredicto final se ha decidido
+        veredictoFinal = true;
+        mentiraOverdad.setText("Veredicto aún por determinar...");
+
+        // Si hay cartas en la baraja de elección, las coloca en el pozo
         if (!cartasEleccion.getBaraja().isEmpty()) {
             for (int i = 0; i < cartasEleccion.getBaraja().size(); ++i) {
                 mesa.getPozo().getBaraja().add(cartasEleccion.getBaraja().get(i));
             }
         }
 
+        // Si hay cartas en el pozo, se muestra la carta oculta
         if (!mesa.getPozo().getBaraja().isEmpty()) {
             panelPozo.add(cartaOculta.getImagenCarta());
             panelPozo.repaint();
             panelPozo.revalidate();
         }
 
+        // Avanza el turno al siguiente jugador
         turnoActual = (turnoActual + 1) % jugadores.size();
-        turno.setText("Turno de jugador: " + (turnoActual+1));
+        turno.setText("Turno de jugador: " + (turnoActual + 1));
         cartasFaltantes.setText("| " + String.valueOf(jugadores.get(turnoActual).getMano().size()));
 
+        // Limpia el panel de la mano y muestra las cartas del nuevo jugador
         panelMano.removeAll();
         for (Carta carta : jugadores.get(turnoActual).getMano()) {
             panelMano.add(carta.getImagenOculta());
@@ -471,13 +546,17 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
         panelMano.repaint();
         panelMano.revalidate();
 
-
+        // Actualiza el estado del juego
         estadoJuego.setText("Elige si es verdad o mentira las cartas ingresadas");
+
+        // Actualiza el panel de cartas seleccionadas
         cartasPanelCartasSeleccionadas();
+
+        // Deshabilita la interacción en el panel de la mano
         panelMano.setEnabled(false);
 
+        // Reinicia la baraja de cartas elegidas
         cartasEleccion = new Baraja();
-
     }
 
 
@@ -500,39 +579,51 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        cartasEliminar.clear();  // Vaciar la lista antes de cada uso
+        // Vacía la lista de cartas a eliminar antes de cada uso
+        cartasEliminar.clear();
 
+        // Verifica si el veredicto final no ha sido determinado
         if (!veredictoFinal) {
+            // Itera a través de las cartas en la mano del jugador actual
             for (Carta carta : jugadores.get(turnoActual).getMano()) {
+                // Comprueba si la carta clickeada es igual a la imagen de la carta en la mano
                 if (e.getSource() == carta.getImagenCarta()) {
+                    // Si el veredicto es mentira o verdad, habilita el botón para colocar en el pozo
                     if (veredicto == Veredicto.MENTIRA || veredicto == Veredicto.VERDAD) {
                         botonColocarPozo.setEnabled(true);
                     }
+
+                    // Habilita los botones de mentira y verdad
                     botonMentira.setEnabled(true);
                     botonVerdad.setEnabled(true);
 
-
+                    // Verifica si se han seleccionado menos de 3 cartas
                     if (cartasEleccion.getBaraja().size() < 3) {
+                        // Agrega la carta seleccionada a la lista de cartas a eliminar y a la baraja de elección
                         cartasEliminar.add(carta);
                         cartasEleccion.getBaraja().add(carta);
+
+                        // Añade la imagen de la carta seleccionada al panel de cartas seleccionadas
                         panelCartasSeleccionadas.add(carta.getImagenCarta());
 
+                        // Actualiza la interfaz gráfica del panel de cartas seleccionadas
                         panelCartasSeleccionadas.repaint();
                         panelCartasSeleccionadas.revalidate();
                     } else {
+                        // Muestra un mensaje si se ha alcanzado el máximo de cartas seleccionadas
                         estadoJuego.setText("Has alcanzado el máximo de cartas");
                     }
                 }
             }
 
+            // Elimina las cartas seleccionadas de la mano del jugador actual
             for (Carta carta : cartasEliminar) {
                 jugadores.get(turnoActual).getMano().remove(carta);
             }
+
+            // Actualiza el texto que muestra cuántas cartas le quedan al jugador actual
             cartasFaltantes.setText("| " + jugadores.get(turnoActual).getMano().size());
         }
-
-
-
     }
 
     @Override
