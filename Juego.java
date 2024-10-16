@@ -254,7 +254,7 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
         for (Carta carta : jugador.getMano()) {
             panelMano.add(carta.getImagenCarta());
         }
-        cartasFaltantes.setText("| " + String.valueOf(jugador.getMano().size()));
+        cartasFaltantes.setText("| " + (jugador.getMano().size()));
         panelMano.repaint();
         panelMano.revalidate();
 
@@ -288,11 +288,6 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
                 panelCartasSeleccionadas.add(cartasEleccion.getBaraja().get(i).getImagenCarta());
             }
         }
-    }
-
-    private void siguientesCartasEnMano()
-    {
-
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
