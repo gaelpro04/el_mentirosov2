@@ -1,11 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
 
 public class Juego extends javax.swing.JFrame implements MouseListener {
 
@@ -41,6 +39,7 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
     private JLabel estadoJuego;
     private JLabel turno;
     private  JLabel mentiraOverdad;
+    private JLabel cartasFaltantes;
 
     private JButton botonMentira;
     private JButton botonVerdad;
@@ -95,9 +94,16 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
         panelPozo = new JPanel(new BorderLayout());
         panelCartasSeleccionadas = new JPanel(new FlowLayout(FlowLayout.CENTER));
         panelMano.setLayout(new FlowLayout(FlowLayout.CENTER));
-        panelCartas.add(panelMano, BorderLayout.SOUTH);
+
+        JScrollPane scrollPane = new JScrollPane(panelMano);  // Cambia aquí
+        scrollPane.setPreferredSize(new Dimension(800, 200));
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        panelCartas.add(scrollPane, BorderLayout.SOUTH);
         panelCartas.add(panelPozo, BorderLayout.CENTER);
         panelCartas.add(panelCartasSeleccionadas, BorderLayout.NORTH);
+
         panelControlArriba = new JPanel();
         panelControlAbajo = new JPanel();
         panelControlArribaIzquierda = new JPanel();
@@ -108,10 +114,12 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
         botonVerdad = new JButton("Verdad");
         botonColocarPozo = new JButton("Colocar en Pozo");
         botonDesocultar = new JButton("Desocultar");
+
         botonDesocultar.addActionListener(evento -> botonDesocultar());
         botonMentira.addActionListener(evento -> botonMentira());
         botonVerdad.addActionListener(evento -> botonVerdad());
         botonColocarPozo.addActionListener(evento -> botonColocarPozo());
+
         if (cartasEleccion.getBaraja().isEmpty()) {
             botonMentira.setEnabled(false);
             botonVerdad.setEnabled(false);
@@ -119,9 +127,11 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
             botonDesocultar.setEnabled(false);
         }
 
+
         estadoJuego = new JLabel("Estado Juego");
         turno = new JLabel("Turno");
         mentiraOverdad = new JLabel("| Mentira o verdad");
+        cartasFaltantes = new JLabel("| 10/10");
 
         //Modificación de paneles
         panelMano.setBackground(new Color(53,101,77));
@@ -135,6 +145,7 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
         panelControlAbajo.add(botonDesocultar, BorderLayout.EAST);
         panelControlArribaDerecha.add(estadoJuego, BorderLayout.EAST);
         panelControlArribaDerecha.add(mentiraOverdad, BorderLayout.EAST);
+        panelControlArribaDerecha.add(cartasFaltantes, BorderLayout.EAST);
         panelControlArriba.add(panelControlArribaIzquierda, BorderLayout.WEST);
         panelControlArriba.add(panelControlArribaDerecha, BorderLayout.EAST);
         panelControlAbajo.add(botonMentira, BorderLayout.CENTER);
@@ -154,13 +165,14 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
         menuAyuda.add(itemCreditos);
         menuBar.add(menuAyuda);
         frame.setJMenuBar(menuBar);
+
         frame.add(panelCartas);
         frame.add(panelControlArriba, BorderLayout.NORTH);
         frame.add(panelControlAbajo, BorderLayout.SOUTH);
 
 
         //Hacer el frame visible junto a modificaciones
-        frame.setSize(1500, 900);
+        frame.setSize(1500, 700);
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
     }
@@ -230,7 +242,7 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
         for (Carta carta : jugador.getMano()) {
             panelMano.add(carta.getImagenCarta());
         }
-
+        cartasFaltantes.setText("| " + String.valueOf(jugador.getMano().size()));
         panelMano.repaint();
         panelMano.revalidate();
 
@@ -264,6 +276,11 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
                 panelCartasSeleccionadas.add(cartasEleccion.getBaraja().get(i).getImagenCarta());
             }
         }
+    }
+
+    private void siguientesCartasEnMano()
+    {
+
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -321,6 +338,8 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
                 jugadores.get(turnoAnterior).getMano().add(mesa.getPozo().getBaraja().removeFirst());
 
                 panelMano.removeAll();
+                panelMano.repaint();
+                panelMano.revalidate();
                 mesa.getPozo().getBaraja().clear();
 
             } else {
@@ -334,6 +353,8 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
                 jugadores.get(turnoActual).getMano().add(mesa.getPozo().getBaraja().removeFirst());
 
                 panelMano.removeAll();
+                panelMano.repaint();
+                panelMano.revalidate();
                 mesa.getPozo().getBaraja().clear();
             }
 
@@ -360,6 +381,8 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
         if (veredictoFinal) {
             panelMano.setEnabled(true);
             panelMano.removeAll();
+            panelMano.repaint();
+            panelMano.revalidate();
             mostrarMano(jugadores.get(turnoActual));
             panelCartasSeleccionadas.removeAll();
             estadoJuego.setText("Escoge máximo tres cartas");
@@ -381,7 +404,6 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
         mostrarMano(jugadores.get(turnoActual));
     }
 
-
     private void botonColocarPozo()
     {
         if (esFinDelJuego()) {
@@ -389,6 +411,8 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
             JLabel mensajeFinal = new JLabel("EL " + determinarGanador().getNombre() + " HA GANADO EL JUEGO!!!");
             panelControlArriba.add(mensajeFinal, BorderLayout.CENTER);
             panelMano.removeAll();
+            panelMano.repaint();
+            panelMano.revalidate();
             panelPozo.removeAll();
             panelCartasSeleccionadas.removeAll();
 
@@ -422,6 +446,7 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
 
         turnoActual = (turnoActual + 1) % jugadores.size();
         turno.setText("Turno de jugador: " + (turnoActual+1));
+        cartasFaltantes.setText("| " + String.valueOf(jugadores.get(turnoActual).getMano().size()));
 
         panelMano.removeAll();
         for (Carta carta : jugadores.get(turnoActual).getMano()) {
@@ -487,6 +512,7 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
             for (Carta carta : cartasEliminar) {
                 jugadores.get(turnoActual).getMano().remove(carta);
             }
+            cartasFaltantes.setText("| " + jugadores.get(turnoActual).getMano().size());
         }
 
 
