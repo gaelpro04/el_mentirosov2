@@ -92,46 +92,50 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
     /**
      * Método privado que hace la interfaz del juego
      */
-    private void hacerFrame()
-    {
-        //Crea el frame
+    private void hacerFrame() {
+        // Crea el frame de la ventana con el título "El mentiroso"
         frame = new JFrame("El mentiroso");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new BorderLayout());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Configura para cerrar la aplicación al cerrar la ventana
+        frame.setLayout(new BorderLayout()); // Establece un layout de tipo BorderLayout para organizar los componentes
 
-        //Crea los paneles del frame
-        panelCartas = new JPanel();
-        panelCartas.setLayout(new BorderLayout());
-        panelMano = new JPanel();
-        panelPozo = new JPanel(new BorderLayout());
-        panelCartasSeleccionadas = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panelMano.setLayout(new FlowLayout(FlowLayout.CENTER));
+        // Crea y configura los paneles donde se mostrarán las cartas y otros elementos del juego
+        panelCartas = new JPanel(); // Panel principal para las cartas
+        panelCartas.setLayout(new BorderLayout()); // Layout para organizar sub-paneles dentro del panelCartas
+        panelMano = new JPanel(); // Panel donde se mostrarán las cartas en la mano del jugador
+        panelPozo = new JPanel(new BorderLayout()); // Panel donde se mostrará el pozo de cartas
+        panelCartasSeleccionadas = new JPanel(new FlowLayout(FlowLayout.CENTER)); // Panel para las cartas seleccionadas
+        panelMano.setLayout(new FlowLayout(FlowLayout.CENTER)); // Layout para organizar las cartas en la mano
 
+        // Crea un JScrollPane para poder desplazarse si la cantidad de cartas en la mano es muy grande
         JScrollPane scrollPane = new JScrollPane(panelMano);
-        scrollPane.setPreferredSize(new Dimension(800, 200));
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setPreferredSize(new Dimension(800, 200)); // Tamaño preferido para el área de cartas en la mano
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); // Scroll horizontal si es necesario
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED); // Scroll vertical si es necesario
 
-        panelCartas.add(scrollPane, BorderLayout.SOUTH);
-        panelCartas.add(panelPozo, BorderLayout.CENTER);
-        panelCartas.add(panelCartasSeleccionadas, BorderLayout.NORTH);
+        // Añade el JScrollPane y los paneles al panel principal (panelCartas)
+        panelCartas.add(scrollPane, BorderLayout.SOUTH); // El panel con las cartas en la mano va en la parte inferior
+        panelCartas.add(panelPozo, BorderLayout.CENTER); // El pozo de cartas va en el centro
+        panelCartas.add(panelCartasSeleccionadas, BorderLayout.NORTH); // Las cartas seleccionadas van en la parte superior
 
-        panelControlArriba = new JPanel();
-        panelControlAbajo = new JPanel();
-        panelControlArribaIzquierda = new JPanel();
-        panelControlArribaDerecha = new JPanel();
+        // Paneles para los controles en la parte superior e inferior del frame
+        panelControlArriba = new JPanel(); // Panel para controles superiores
+        panelControlAbajo = new JPanel(); // Panel para controles inferiores
+        panelControlArribaIzquierda = new JPanel(); // Subpanel a la izquierda para información del turno
+        panelControlArribaDerecha = new JPanel(); // Subpanel a la derecha para estado del juego
 
-        //Creaciones de botones
-        botonMentira = new JButton("Mentira");
-        botonVerdad = new JButton("Verdad");
-        botonColocarPozo = new JButton("Colocar en Pozo");
-        botonDesocultar = new JButton("Mostrar");
+        // Creación de los botones de interacción del juego
+        botonMentira = new JButton("Mentira"); // Botón para indicar que se está mintiendo
+        botonVerdad = new JButton("Verdad"); // Botón para indicar que se dice la verdad
+        botonColocarPozo = new JButton("Colocar en Pozo"); // Botón para colocar cartas en el pozo
+        botonDesocultar = new JButton("Mostrar"); // Botón para revelar las cartas ocultas
 
+        // Asignar acciones a los botones mediante ActionListeners
         botonDesocultar.addActionListener(evento -> botonDesocultar());
         botonMentira.addActionListener(evento -> botonMentira());
         botonVerdad.addActionListener(evento -> botonVerdad());
         botonColocarPozo.addActionListener(evento -> botonColocarPozo());
 
+        // Deshabilita los botones si la baraja de cartas está vacía
         if (cartasEleccion.getBaraja().isEmpty()) {
             botonMentira.setEnabled(false);
             botonVerdad.setEnabled(false);
@@ -139,54 +143,55 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
             botonDesocultar.setEnabled(false);
         }
 
+        // Labels para mostrar información del juego
+        estadoJuego = new JLabel("Estado Juego"); // Muestra el estado del juego actual
+        turno = new JLabel("Turno"); // Muestra el turno actual
+        mentiraOverdad = new JLabel("| Mentira o verdad"); // Muestra si la jugada es mentira o verdad
+        cartasFaltantes = new JLabel("| 10/10"); // Muestra cuántas cartas faltan
 
-        estadoJuego = new JLabel("Estado Juego");
-        turno = new JLabel("Turno");
-        mentiraOverdad = new JLabel("| Mentira o verdad");
-        cartasFaltantes = new JLabel("| 10/10");
+        // Modificación de los colores de fondo de los paneles de cartas
+        panelMano.setBackground(new Color(53, 101, 77)); // Fondo verde oscuro para el panel de la mano
+        panelCartas.setBackground(new Color(53, 101, 77)); // Fondo verde oscuro para el panel principal de cartas
+        panelCartasSeleccionadas.setBackground(new Color(53, 101, 77)); // Fondo verde oscuro para las cartas seleccionadas
+        panelPozo.setBackground(new Color(53, 101, 77)); // Fondo verde oscuro para el pozo de cartas
 
-        //Modificación de paneles
-        panelMano.setBackground(new Color(53,101,77));
-        panelCartas.setBackground(new Color(53,101,77));
-        panelCartasSeleccionadas.setBackground(new Color(53,101,77));
-        panelPozo.setBackground(new Color(53,101,77));
+        // Configuración de los paneles de control superiores
+        panelControlArribaIzquierda.setLayout(new FlowLayout()); // Layout del panel izquierdo
+        panelControlArribaDerecha.setLayout(new FlowLayout()); // Layout del panel derecho
+        panelControlArribaIzquierda.add(turno, BorderLayout.WEST); // Añade el label del turno a la izquierda
+        panelControlAbajo.add(botonDesocultar, BorderLayout.EAST); // Añade el botón para desocultar cartas a la derecha
+        panelControlArribaDerecha.add(estadoJuego, BorderLayout.EAST); // Añade el estado del juego a la derecha
+        panelControlArribaDerecha.add(mentiraOverdad, BorderLayout.EAST); // Añade el label "Mentira o verdad" a la derecha
+        panelControlArribaDerecha.add(cartasFaltantes, BorderLayout.EAST); // Añade el label "cartas faltantes" a la derecha
+        panelControlArriba.add(panelControlArribaIzquierda, BorderLayout.WEST); // Añade el subpanel izquierdo al panel superior
+        panelControlArriba.add(panelControlArribaDerecha, BorderLayout.EAST); // Añade el subpanel derecho al panel superior
+        panelControlAbajo.add(botonMentira, BorderLayout.CENTER); // Añade el botón de "Mentira" en el centro del panel inferior
+        panelControlAbajo.add(botonVerdad, BorderLayout.CENTER); // Añade el botón de "Verdad" en el centro del panel inferior
+        panelControlAbajo.add(botonColocarPozo, BorderLayout.CENTER); // Añade el botón "Colocar en Pozo" en el centro del panel inferior
 
-        panelControlArribaIzquierda.setLayout(new FlowLayout());
-        panelControlArribaDerecha.setLayout(new FlowLayout());
-        panelControlArribaIzquierda.add(turno, BorderLayout.WEST);
-        panelControlAbajo.add(botonDesocultar, BorderLayout.EAST);
-        panelControlArribaDerecha.add(estadoJuego, BorderLayout.EAST);
-        panelControlArribaDerecha.add(mentiraOverdad, BorderLayout.EAST);
-        panelControlArribaDerecha.add(cartasFaltantes, BorderLayout.EAST);
-        panelControlArriba.add(panelControlArribaIzquierda, BorderLayout.WEST);
-        panelControlArriba.add(panelControlArribaDerecha, BorderLayout.EAST);
-        panelControlAbajo.add(botonMentira, BorderLayout.CENTER);
-        panelControlAbajo.add(botonVerdad, BorderLayout.CENTER);
-        panelControlAbajo.add(botonColocarPozo, BorderLayout.CENTER);
+        // Crea la barra de menú y el menú de ayuda
+        menuBar = new JMenuBar(); // Barra de menú
+        menuAyuda = new JMenu("Ayuda"); // Menú "Ayuda"
+        itemSalir = new JMenuItem("Salir"); // Opción para salir del juego
+        itemCreditos = new JMenuItem("Créditos"); // Opción para mostrar los créditos
+        itemSalir.addActionListener(evento -> botonSalir()); // Asigna acción al botón salir
+        itemCreditos.addActionListener(evento -> mostrarCreditos()); // Asigna acción al botón créditos
 
-        //Crea la barra menú y menú, junto a sus actionListeners
-        menuBar = new JMenuBar();
-        menuAyuda = new JMenu("Ayuda");
-        itemSalir = new JMenuItem("Salir");
-        itemCreditos = new JMenuItem("Créditos");
-        itemSalir.addActionListener(evento -> botonSalir());
-        itemCreditos.addActionListener(evento -> mostrarCreditos());
-
-        //Almacén de items, menús en la barra menú y añadir paneles a frame
+        // Añade los ítems al menú de ayuda y el menú a la barra de menú
         menuAyuda.add(itemSalir);
         menuAyuda.add(itemCreditos);
         menuBar.add(menuAyuda);
-        frame.setJMenuBar(menuBar);
+        frame.setJMenuBar(menuBar); // Establece la barra de menú en el frame
 
-        frame.add(panelCartas);
-        frame.add(panelControlArriba, BorderLayout.NORTH);
-        frame.add(panelControlAbajo, BorderLayout.SOUTH);
+        // Añade los paneles de cartas y de control al frame principal
+        frame.add(panelCartas); // Añade el panel principal de cartas al frame
+        frame.add(panelControlArriba, BorderLayout.NORTH); // Panel de controles superiores en la parte norte
+        frame.add(panelControlAbajo, BorderLayout.SOUTH); // Panel de controles inferiores en la parte sur
 
-
-        //Hacer el frame visible junto a modificaciones
-        frame.setSize(1500, 700);
-        frame.setVisible(true);
-        frame.setLocationRelativeTo(null);
+        // Configura el tamaño de la ventana (frame) y la hace visible
+        frame.setSize(1500, 700); // Establece el tamaño de la ventana
+        frame.setVisible(true); // Hace visible la ventana
+        frame.setLocationRelativeTo(null); // Centra la ventana en la pantalla
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -228,23 +233,27 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
         }
     }
 
-    private boolean esFinDelJuego()
-    {
+    private boolean esFinDelJuego() {
+        // Itera a través de la lista de jugadores para verificar si alguno ha terminado su mano
         for (Jugador jugador : jugadores) {
+            // Si el jugador actual no tiene más cartas en su mano (mano vacía), se considera el fin del juego
             if (jugador.getMano().isEmpty()) {
-                return true;
+                return true; // Si un jugador ha vaciado su mano, el juego termina y retorna true
             }
         }
+        // Si ningún jugador ha vaciado su mano, el juego continúa y retorna false
         return false;
     }
 
-    private Jugador determinarGanador()
-    {
+    private Jugador determinarGanador() {
+        // Itera a través de la lista de jugadores para verificar si alguno ha vaciado su mano
         for (Jugador jugador : jugadores) {
+            // Si el jugador actual tiene su mano vacía, se considera que es el ganador
             if (jugador.getMano().isEmpty()) {
-                return jugador;
+                return jugador; // Devuelve el jugador que ha ganado (mano vacía)
             }
         }
+        // Si ningún jugador ha vaciado su mano, se devuelve null (no hay ganador aún)
         return null;
     }
 
