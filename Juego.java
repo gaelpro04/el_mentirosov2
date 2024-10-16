@@ -95,7 +95,7 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
         panelCartasSeleccionadas = new JPanel(new FlowLayout(FlowLayout.CENTER));
         panelMano.setLayout(new FlowLayout(FlowLayout.CENTER));
 
-        JScrollPane scrollPane = new JScrollPane(panelMano);  // Cambia aquí
+        JScrollPane scrollPane = new JScrollPane(panelMano);
         scrollPane.setPreferredSize(new Dimension(800, 200));
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
