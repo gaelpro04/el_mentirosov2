@@ -54,29 +54,41 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
      */
     public Juego(int cantJugadores) {
 
+        // Lista de jugadores inicializada con una capacidad igual a la cantidad de jugadores
         this.jugadores = new ArrayList<>(cantJugadores);
+
+        // Se crea una instancia de Mesa que representa el área donde se colocarán las cartas durante el juego
         this.mesa = new Mesa();
-        cartaOculta = new Carta("oros",1,false,"BarajaEspañola/CartaInversa.png");
+
+        // Se crea una carta oculta (no visible para los jugadores), es de "oros", con valor 1,
+        // que no está boca arriba, y tiene una imagen que representa el reverso de la carta
+        cartaOculta = new Carta("oros", 1, false, "BarajaEspañola/CartaInversa.png");
+
+        // Se inicializa una baraja de cartas (mazo completo) utilizando el constructor por defecto
+        // Se espera que esta clase `Baraja` maneje un conjunto de cartas y otras operaciones sobre ellas
         cartasEleccion = new Baraja();
+
+        // El índice del turno actual se inicializa en 0, lo que indica que el primer jugador empezará
         turnoActual = 0;
+
+        // Bandera que indica si el juego ha terminado o no, inicialmente se establece en falso
         veredictoFinal = false;
 
-        //El constructor por defecto se tiene que poner
-        //48(que es la cantidad de cartas de una baraja española)
+        // Se crea una baraja de 40 cartas (típico de la baraja española, sin ochos y nueves)
         this.baraja = new Baraja(40);
 
-        //Se inicializa primero los jugadores para que no haya problemas
-        //al pedirles el nombre
+        // Inicialización de los jugadores, agregando instancias de Jugador a la lista de jugadores
+        // Cada jugador se inicializa con un nombre vacío, que se podría completar después
         for (int i = 0; i < cantJugadores; ++i) {
-            jugadores.add(new Jugador(""));
+            jugadores.add(new Jugador("")); // Aquí se podría pedir el nombre real del jugador
         }
 
-        //Método para hacer manos(explicado más adelante)
+        // Llama al método hacerManos, que probablemente distribuye las cartas a los jugadores
         hacerManos();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    
     /**
      * Método privado que hace la interfaz del juego
      */
@@ -113,7 +125,7 @@ public class Juego extends javax.swing.JFrame implements MouseListener {
         botonMentira = new JButton("Mentira");
         botonVerdad = new JButton("Verdad");
         botonColocarPozo = new JButton("Colocar en Pozo");
-        botonDesocultar = new JButton("Desocultar");
+        botonDesocultar = new JButton("Mostrar");
 
         botonDesocultar.addActionListener(evento -> botonDesocultar());
         botonMentira.addActionListener(evento -> botonMentira());
